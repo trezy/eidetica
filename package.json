@@ -1,0 +1,44 @@
+{
+  "productName": "Eidetica",
+  "name": "eidetica",
+  "description": "Screenshot uploader",
+  "author": {
+    "name": "Trezy",
+    "email": "tre@trezy.com",
+    "url": "trezy.com"
+  },
+  "version": "1.0.0",
+  "main": "main.js",
+  "repository": {},
+  "license": "MIT",
+  "dependencies": {
+    "electron-config": "^0.2.1",
+    "electron-main-notification": "^1.0.1",
+    "menubar": "^5.2.3",
+    "scp2": "^0.5.0",
+    "shorthash": "^0.0.2"
+  },
+  "devDependencies": {
+    "electron": "^1.6.1",
+    "electron-builder": "^15.6.2"
+  },
+  "scripts": {
+    "dev": "NODE_ENV='development' npm run start",
+    "dist": "build",
+    "pack": "build --dir",
+    "postinstall": "install-app-deps",
+    "start": "electron . --enable-logging"
+  },
+  "build": {
+    "appId": "eidetica",
+    "extraResources": [
+      {
+        "from": "assets",
+        "to": "",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  }
+}
