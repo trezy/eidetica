@@ -1,6 +1,5 @@
 const Config = require('electron-config')
 const fs = require('fs')
-const menubar = require('menubar')
 const notify = require('electron-main-notification')
 const path = require('path')
 const scpClient = require('scp2')
