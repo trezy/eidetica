@@ -19,145 +19,152 @@ const shorthash = require('shorthash')
 
 
 
-let config = new Config
-let preferencesPane
-let screenshotFolder
-let shouldQuitApp = false
-let tray
+class App {
+  constructor () {
+    this.config = new Config
 
+    this.initialize = this.initialize.bind(this)
+    this.showPreferencesPane = this.showPreferencesPane.bind(this)
 
-
-
-
-function createPreferencesPane () {
-  preferencesPane = new BrowserWindow({
-    show: false,
-    titleBarStyle: 'hidden',
-    transparent: true,
-    useContentSize: true,
-  })
-
-  preferencesPane.loadURL(path.join('file://', __dirname, 'preferences/', 'index.html'))
-  preferencesPane.on('blur', preferencesPane.hide)
-  preferencesPane.on('close', event => {
-    if (shouldQuitApp) {
-      return preferencesPane = null
-    }
-
-    event.preventDefault()
-    preferencesPane.hide()
-  })
-}
-
-function generateShortlink (filename) {
-  return `${getURL()}/${filename}`
-}
-
-function getURL () {
-  return config.get('url')
-}
-
-function getSCPConfig () {
-  return {
-    host: config.get('host'),
-//    port: config.get('port'),
-    username: config.get('username'),
-    password: config.get('password'),
-    path: config.get('path'),
+    app.on('ready', this.initialize)
+    app.on('before-quit', () => this.shouldQuitApp = true)
   }
-}
 
-function handleScreenshot (filename) {
-  let filepath = path.resolve(screenshotFolder, filename)
-  let fileExt = path.extname(filename)
-  let hashedFilename = `${shorthash.unique(filename.replace(fileExt, ''))}${fileExt}`
-  let hashedFilepath = path.resolve(app.getPath('temp'), hashedFilename)
-  let shortlink = generateShortlink(hashedFilename)
-
-  fs.renameSync(filepath, hashedFilepath)
-
-  scpClient.scp(hashedFilepath, getSCPConfig(), (error => {
-    if (error) {
-      return console.log('Upload error:', error)
-    }
-
-    fs.unlinkSync(hashedFilepath)
-
-    clipboard.writeText(shortlink)
-
-    notify('Screenshot uploaded!', {
-      body: 'The screenshot URL has been copied to your clipboard.'
+  createPreferencesPane () {
+    this.preferencesPane = new BrowserWindow({
+      show: false,
+      titleBarStyle: 'hidden',
+      transparent: true,
+      useContentSize: true,
     })
-  }))
-}
 
-function showPreferencesPane () {
-  if (!preferencesPane) {
-    createPreferencesPane()
+    this.preferencesPane.loadURL(path.join('file://', __dirname, 'preferences/', 'index.html'))
+    this.preferencesPane.on('blur', this.preferencesPane.hide)
+    this.preferencesPane.on('close', event => {
+      if (this.shouldQuitApp) {
+        return this.preferencesPane = null
+      }
+
+      event.preventDefault()
+      this.preferencesPane.hide()
+    })
   }
 
-  preferencesPane.show()
-}
-
-function startScreenshotListener () {
-  // MacOS
-  fs.watch(screenshotFolder, (type, filename) => {
-    if (type === 'change' && filename.indexOf('Screen Shot') === 0) {
-      handleScreenshot(filename)
-    }
-  })
-
-  // Windows
-//  globalShortcut.register('PrintScreen', () => {
-//    console.log('PrintScreen pressed')
-//  })
-}
-
-
-
-
-
-app.on('ready', function () {
-  let trayIconPath
-
-  // Get the screenshot folder
-  screenshotFolder = app.getPath('desktop')
-
-  // Prevent the dock icon from being displayed
-  app.dock.hide()
-
-  // Preload the preferences pane in a hidden browser window
-  createPreferencesPane()
-
-  // Figure out where the tray icon lives
-  if (process.env.NODE_ENV === 'development') {
-    trayIconPath = path.resolve(app.getAppPath(), 'assets', 'tray-iconTemplate.png')
-  } else {
-    trayIconPath = path.resolve(process.resourcesPath, 'tray-iconTemplate.png')
+  generateShortlink (filename) {
+    return `${this.getURL()}/${filename}`
   }
 
-  // Generate the tray icon as a native image
-  let trayIcon = nativeImage.createFromPath(path.resolve(trayIconPath))
+  getSCPConfig () {
+    let host = this.config.get('host')
+    let port = this.config.get('port') || 22
+    let username = this.config.get('username')
+    let password = this.config.get('password')
+    let path = this.config.get('path')
 
-  // setting the tray icon as a template image means macOS will handle changing it from white to black for us
-  trayIcon.setTemplateImage(true)
-
-  tray = new Tray(trayIcon)
-  tray.setToolTip('Eidetica')
-  tray.setContextMenu(Menu.buildFromTemplate([
-    {
-      label: 'Preferences...',
-      click: showPreferencesPane
-    },
-    { type: 'separator' },
-    {
-      label: 'Quit',
-      click: app.quit
+    return {
+      host: host,
+      port: port,
+      username: username,
+      password: password,
+      path: path,
     }
-  ]))
+  }
 
-  // Start listening for screenshots to be taken
-  startScreenshotListener()
-})
+  getURL () {
+    return this.config.get('url')
+  }
 
-app.on('before-quit', () => shouldQuitApp = true)
+  handleScreenshot (filename) {
+    let filepath = path.resolve(this.screenshotFolder, filename)
+    let fileExt = path.extname(filename)
+    let hashedFilename = `${shorthash.unique(filename.replace(fileExt, ''))}${fileExt}`
+    let hashedFilepath = path.resolve(app.getPath('temp'), hashedFilename)
+    let shortlink = this.generateShortlink(hashedFilename)
+
+    fs.renameSync(filepath, hashedFilepath)
+
+    scpClient.scp(hashedFilepath, this.getSCPConfig(), (error => {
+      if (error) {
+        return console.log('Upload error:', error)
+      }
+
+      fs.unlinkSync(hashedFilepath)
+
+      clipboard.writeText(shortlink)
+
+      notify('Screenshot uploaded!', {
+        body: 'The screenshot URL has been copied to your clipboard.'
+      })
+    }))
+  }
+
+  initialize () {
+    let trayIconPath
+
+    // Get the screenshot folder
+    this.screenshotFolder = app.getPath('desktop')
+
+    // Track whether or not we should exit or just hide the preferences pane
+    this.shouldQuitApp = false
+
+    // Prevent the dock icon from being displayed
+    app.dock.hide()
+
+    // Preload the preferences pane in a hidden browser window
+    this.createPreferencesPane()
+
+    // Figure out where the tray icon lives
+    if (process.env.NODE_ENV === 'development') {
+      trayIconPath = path.resolve(app.getAppPath(), 'assets', 'tray-iconTemplate.png')
+    } else {
+      trayIconPath = path.resolve(process.resourcesPath, 'tray-iconTemplate.png')
+    }
+
+    // Generate the tray icon as a native image
+    this.trayIcon = nativeImage.createFromPath(path.resolve(trayIconPath))
+
+    // setting the tray icon as a template image means macOS will handle changing it from white to black for us
+    this.trayIcon.setTemplateImage(true)
+
+    this.tray = new Tray(this.trayIcon)
+    this.tray.setToolTip('Eidetica')
+    this.tray.setContextMenu(Menu.buildFromTemplate([
+      {
+        label: 'Preferences...',
+        click: this.showPreferencesPane
+      },
+      { type: 'separator' },
+      {
+        label: 'Quit',
+        click: app.quit
+      }
+    ]))
+
+    // Start listening for screenshots to be taken
+    this.startScreenshotListener()
+  }
+
+  showPreferencesPane () {
+    if (!this.preferencesPane) {
+      this.createPreferencesPane()
+    }
+
+    this.preferencesPane.show()
+  }
+
+  startScreenshotListener () {
+    // MacOS
+    fs.watch(this.screenshotFolder, (type, filename) => {
+      if (type === 'change' && filename.indexOf('Screen Shot') === 0) {
+        this.handleScreenshot(filename)
+      }
+    })
+
+    // Windows
+  //  globalShortcut.register('PrintScreen', () => {
+  //    console.log('PrintScreen pressed')
+  //  })
+  }
+}
+
+let eidetica = new App
