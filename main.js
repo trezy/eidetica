@@ -19,7 +19,7 @@ const shorthash = require('shorthash')
 
 
 
-class App {
+new class App {
   constructor () {
     this.config = new Config
 
@@ -54,20 +54,30 @@ class App {
     return `${this.getURL()}/${filename}`
   }
 
-  getSCPConfig () {
-    let host = this.config.get('host')
-    let port = this.config.get('port') || 22
-    let username = this.config.get('username')
-    let password = this.config.get('password')
-    let path = this.config.get('path')
+  getPrivateKey () {
+    let privateKeyPath = path.resolve(process.env.HOME, '.ssh', 'id_rsa')
 
-    return {
-      host: host,
-      port: port,
-      username: username,
-      password: password,
-      path: path,
+    return fs.readFileSync(privateKeyPath, 'utf8')
+  }
+
+  getSCPConfig () {
+    let config = {
+      host: this.config.get('host'),
+      port: this.config.get('port') || 22,
+      username: this.config.get('username'),
+      path: this.config.get('path'),
     }
+    let password = this.config.get('password')
+
+    if (password) {
+      config.password = password
+
+    } else {
+      config.privateKey = this.getPrivateKey()
+      console.log(config.privateKey)
+    }
+
+    return config
   }
 
   getURL () {
@@ -166,5 +176,3 @@ class App {
   //  })
   }
 }
-
-let eidetica = new App
