@@ -1,6 +1,16 @@
+let {
+  app,
+  BrowserWindow,
+  clipboard,
+  globalShortcut,
+  Menu,
+  nativeImage,
+  systemPreferences,
+  Tray,
+} = require('electron')
 const Config = require('electron-config')
-const fs = require('fs')
 const notify = require('electron-main-notification')
+const fs = require('fs')
 const path = require('path')
 const scpClient = require('scp2')
 const shorthash = require('shorthash')
@@ -10,24 +20,33 @@ const shorthash = require('shorthash')
 
 
 let config = new Config
-let {
-  app,
-  clipboard,
-  globalShortcut,
-  Menu,
-  nativeImage,
-  systemPreferences,
-  Tray,
-} = require('electron')
+let preferencesPane
 let screenshotFolder
+let shouldQuitApp = false
 let tray
 
 
 
 
 
-function displayPreferences () {
-  console.log('Display Preferences Pane')
+function createPreferencesPane () {
+  preferencesPane = new BrowserWindow({
+    show: false,
+    titleBarStyle: 'hidden',
+    transparent: true,
+    useContentSize: true,
+  })
+
+  preferencesPane.loadURL(path.join('file://', __dirname, 'preferences/', 'index.html'))
+  preferencesPane.on('blur', preferencesPane.hide)
+  preferencesPane.on('close', event => {
+    if (shouldQuitApp) {
+      return preferencesPane = null
+    }
+
+    event.preventDefault()
+    preferencesPane.hide()
+  })
 }
 
 function generateShortlink (filename) {
@@ -72,6 +91,14 @@ function handleScreenshot (filename) {
   }))
 }
 
+function showPreferencesPane () {
+  if (!preferencesPane) {
+    createPreferencesPane()
+  }
+
+  preferencesPane.show()
+}
+
 function startScreenshotListener () {
   // MacOS
   fs.watch(screenshotFolder, (type, filename) => {
@@ -93,17 +120,26 @@ function startScreenshotListener () {
 app.on('ready', function () {
   let trayIconPath
 
+  // Get the screenshot folder
   screenshotFolder = app.getPath('desktop')
 
+  // Prevent the dock icon from being displayed
   app.dock.hide()
 
+  // Preload the preferences pane in a hidden browser window
+  createPreferencesPane()
+
+  // Figure out where the tray icon lives
   if (process.env.NODE_ENV === 'development') {
     trayIconPath = path.resolve(app.getAppPath(), 'assets', 'tray-iconTemplate.png')
   } else {
     trayIconPath = path.resolve(process.resourcesPath, 'tray-iconTemplate.png')
   }
 
+  // Generate the tray icon as a native image
   let trayIcon = nativeImage.createFromPath(path.resolve(trayIconPath))
+
+  // setting the tray icon as a template image means macOS will handle changing it from white to black for us
   trayIcon.setTemplateImage(true)
 
   tray = new Tray(trayIcon)
@@ -111,7 +147,7 @@ app.on('ready', function () {
   tray.setContextMenu(Menu.buildFromTemplate([
     {
       label: 'Preferences...',
-      click: displayPreferences
+      click: showPreferencesPane
     },
     { type: 'separator' },
     {
@@ -120,5 +156,8 @@ app.on('ready', function () {
     }
   ]))
 
+  // Start listening for screenshots to be taken
   startScreenshotListener()
 })
+
+app.on('before-quit', () => shouldQuitApp = true)
