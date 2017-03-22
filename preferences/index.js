@@ -1,9 +1,22 @@
+let { BrowserWindow } = require('electron').remote
 let Config = require('electron-config')
+
+
+
+
+
 let config = new Config
+let windows = BrowserWindow.getAllWindows()
 
 
 
 
+
+windows.forEach(win => {
+  let rootEl = document.querySelector('html')
+
+  win.setSize(500, document.body.clientHeight + 22)
+})
 
 function handleInput (event) {
   let input = event.target

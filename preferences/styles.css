@@ -1,0 +1,57 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 10px;
+}
+
+html:before {
+  background-color: #1a1a1a;
+  content: '';
+  display: block;
+  height: 22px;
+}
+
+body {
+  align-items: stretch;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  font-family: Helvetica, sans-serif;
+  font-size: 14px;
+  padding: 2rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+input {
+  border: none;
+  font-size: inherit;
+  margin: 0;
+  padding: 0.2rem;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+}
+
+tr {
+  margin-bottom: 1rem;
+}
+
+th {
+  padding-right: 1rem;
+  text-align: right;
+  width: 1px;
+}
