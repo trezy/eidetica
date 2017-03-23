@@ -1,0 +1,2 @@
+script:
+- yarn run dist
