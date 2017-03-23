@@ -69,6 +69,7 @@ new class App {
         sshpk.parsePrivateKey(key)
 
         privateKeys.push(key)
+
       } catch (error) {}
     })
 
@@ -188,17 +189,14 @@ new class App {
 
         scpClient.scp(filepath, scpConfig, error => {
           if (error) {
-            console.log('Upload failed.')
             if (privateKeys.length) {
-              console.log('trying next private key...')
               return this.uploadFile(filepath, scpConfig, privateKeys)
             }
 
-            console.log('no more private keys to try.')
             return console.log('Upload error:', error)
           }
 
-          console.log('success!')
+          console.log('Upload success!')
 
           fs.unlinkSync(filepath)
 
@@ -221,6 +219,8 @@ new class App {
         }
 
         fs.unlinkSync(filepath)
+
+        console.log('Upload success!')
 
         clipboard.writeText(shortlink)
 
