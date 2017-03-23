@@ -1,2 +1,7 @@
+language: node_js
+node_js:
+  - "7"
 script:
-- yarn run dist
+  - yarn run dist
+cache:
+  yarn: true
