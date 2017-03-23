@@ -1,4 +1,4 @@
-let {
+const {
   app,
   BrowserWindow,
   clipboard,
@@ -14,6 +14,7 @@ const fs = require('fs')
 const path = require('path')
 const scpClient = require('scp2')
 const shorthash = require('shorthash')
+const sshpk = require('sshpk')
 
 
 
@@ -54,10 +55,24 @@ new class App {
     return `${this.getURL()}/${filename}`
   }
 
-  getPrivateKey () {
+  getPrivateKeys () {
     let privateKeyPath = path.resolve(process.env.HOME, '.ssh', 'id_rsa')
+    let sshPath = path.resolve(process.env.HOME, '.ssh')
+    let privateKeys = []
 
-    return fs.readFileSync(privateKeyPath, 'utf8')
+    fs.readdirSync(sshPath).forEach(file => {
+      let keyPath = path.resolve(sshPath, file)
+
+      try {
+        let key = fs.readFileSync(keyPath, 'utf8')
+
+        sshpk.parsePrivateKey(key)
+
+        privateKeys.push(key)
+      } catch (error) {}
+    })
+
+    return privateKeys
   }
 
   getSCPConfig () {
@@ -72,9 +87,6 @@ new class App {
     if (password) {
       config.password = password
 
-    } else {
-      config.privateKey = this.getPrivateKey()
-      console.log(config.privateKey)
     }
 
     return config
@@ -85,6 +97,7 @@ new class App {
   }
 
   handleScreenshot (filename) {
+    let scpConfig = this.getSCPConfig()
     let filepath = path.resolve(this.screenshotFolder, filename)
     let fileExt = path.extname(filename)
     let hashedFilename = `${shorthash.unique(filename.replace(fileExt, ''))}${fileExt}`
@@ -93,19 +106,7 @@ new class App {
 
     fs.renameSync(filepath, hashedFilepath)
 
-    scpClient.scp(hashedFilepath, this.getSCPConfig(), (error => {
-      if (error) {
-        return console.log('Upload error:', error)
-      }
-
-      fs.unlinkSync(hashedFilepath)
-
-      clipboard.writeText(shortlink)
-
-      notify('Screenshot uploaded!', {
-        body: 'The screenshot URL has been copied to your clipboard.'
-      })
-    }))
+    this.uploadFile(hashedFilepath, scpConfig, this.getPrivateKeys())
   }
 
   initialize () {
@@ -174,5 +175,59 @@ new class App {
   //  globalShortcut.register('PrintScreen', () => {
   //    console.log('PrintScreen pressed')
   //  })
+  }
+
+  uploadFile (filepath, scpConfig, privateKeys = []) {
+    let shortlink = this.generateShortlink(path.basename(filepath))
+
+    if (!scpConfig.password) {
+      for (let i = 0, length = privateKeys.length; i < length; i++) {
+        let privateKey = privateKeys.shift()
+
+        scpConfig.privateKey = privateKey
+
+        scpClient.scp(filepath, scpConfig, error => {
+          if (error) {
+            console.log('Upload failed.')
+            if (privateKeys.length) {
+              console.log('trying next private key...')
+              return this.uploadFile(filepath, scpConfig, privateKeys)
+            }
+
+            console.log('no more private keys to try.')
+            return console.log('Upload error:', error)
+          }
+
+          console.log('success!')
+
+          fs.unlinkSync(filepath)
+
+          clipboard.writeText(shortlink)
+
+          notify('Screenshot uploaded!', {
+            body: 'The screenshot URL has been copied to your clipboard.'
+          })
+        })
+      }
+
+    } else {
+      scpClient.scp(filepath, scpConfig, error => {
+        if (error) {
+          if (privateKeys.length) {
+            return this.uploadFile(filepath, scpConfig, privateKeys)
+          }
+
+          return console.log('Upload error:', error)
+        }
+
+        fs.unlinkSync(filepath)
+
+        clipboard.writeText(shortlink)
+
+        notify('Screenshot uploaded!', {
+          body: 'The screenshot URL has been copied to your clipboard.'
+        })
+      })
+    }
   }
 }

@@ -15,7 +15,8 @@
     "electron-config": "^0.2.1",
     "electron-main-notification": "^1.0.1",
     "scp2": "^0.5.0",
-    "shorthash": "^0.0.2"
+    "shorthash": "^0.0.2",
+    "sshpk": "^1.11.0"
   },
   "devDependencies": {
     "electron": "^1.6.1",
