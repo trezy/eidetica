@@ -52,6 +52,7 @@ new class App {
       event.preventDefault()
       this.pane.hide()
     })
+    this.pane.on('ready-to-show', this.pane.show)
 
     globalShortcut.register('Escape', () => this.pane.hide())
   }
@@ -190,8 +191,7 @@ new class App {
       this.createPane()
     }
 
-    this.pane.loadURL(path.join('file://', __dirname, 'preferences/', 'about.html'))
-    this.pane.show()
+    this.pane.loadURL(path.join('file://', __dirname, 'panes/', 'about.html'))
   }
 
   showPreferencesPane () {
@@ -199,8 +199,7 @@ new class App {
       this.createPane()
     }
 
-    this.pane.loadURL(path.join('file://', __dirname, 'preferences/', 'index.html'))
-    this.pane.show()
+    this.pane.loadURL(path.join('file://', __dirname, 'panes/', 'preferences.html'))
   }
 
   startScreenshotListener () {
