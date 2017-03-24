@@ -4,7 +4,7 @@ let Config = require('electron-config')
 
 
 
-new class PreferencesPane {
+new class {
   constructor () {
     this.config = new Config
 

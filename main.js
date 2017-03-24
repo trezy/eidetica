@@ -38,8 +38,8 @@ new class App {
 
   createPane () {
     this.pane = new BrowserWindow({
-      show: false,
       frame: false,
+      show: false,
       transparent: true,
       useContentSize: true,
       width: 500,
@@ -63,8 +63,6 @@ new class App {
       this.pane.hide()
     })
     this.pane.on('ready-to-show', this.pane.show)
-
-    globalShortcut.register('Escape', () => this.pane.hide())
   }
 
   generateShortlink (filename) {
