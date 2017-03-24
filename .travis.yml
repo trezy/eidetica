@@ -3,7 +3,6 @@ node_js:
   - "7"
 os: osx
 script:
-  - ./scripts/add-certificate.sh
   - yarn run dist
 cache:
   yarn: true
