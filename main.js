@@ -15,6 +15,7 @@ const path = require('path')
 const scpClient = require('scp2')
 const shorthash = require('shorthash')
 const sshpk = require('sshpk')
+const url = require('url')
 
 
 
@@ -43,6 +44,15 @@ new class App {
       useContentSize: true,
       width: 500,
     })
+
+    this.pane.loadPane = function (file) {
+      this.loadURL(url.format({
+        pathname: path.join(__dirname, 'panes', `${file}.html`),
+        protocol: 'file',
+        slashes: true,
+      }))
+    }
+
     this.pane.on('blur', this.pane.hide)
     this.pane.on('close', event => {
       if (this.shouldQuitApp) {
@@ -191,7 +201,7 @@ new class App {
       this.createPane()
     }
 
-    this.pane.loadURL(path.join('file://', __dirname, 'panes/', 'about.html'))
+    this.pane.loadPane('about')
   }
 
   showPreferencesPane () {
@@ -199,7 +209,7 @@ new class App {
       this.createPane()
     }
 
-    this.pane.loadURL(path.join('file://', __dirname, 'panes/', 'preferences.html'))
+    this.pane.loadPane('preferences')
   }
 
   startScreenshotListener () {
