@@ -15,6 +15,7 @@ const path = require('path')
 const scpClient = require('scp2')
 const shorthash = require('shorthash')
 const sshpk = require('sshpk')
+const url = require('url')
 
 
 
@@ -27,6 +28,7 @@ new class App {
 
     // Bind any functions that will always require the app as context
     this.initialize = this.initialize.bind(this)
+    this.showAboutPane = this.showAboutPane.bind(this)
     this.showPreferencesPane = this.showPreferencesPane.bind(this)
 
     // Spin up application
@@ -34,32 +36,35 @@ new class App {
     app.on('before-quit', () => this.shouldQuitApp = true)
   }
 
-  createPreferencesPane () {
-    this.preferencesPane = new BrowserWindow({
+  createPane () {
+    this.pane = new BrowserWindow({
       show: false,
       frame: false,
       transparent: true,
       useContentSize: true,
+      width: 500,
     })
 
-    this.preferencesPane.loadURL(path.join('file://', __dirname, 'preferences/', 'index.html'))
-    this.preferencesPane.on('show', () => {
-      if (!this.preferencesPane.hasBeenCentered) {
-        this.preferencesPane.center()
-        this.preferencesPane.hasBeenCentered = true
-      }
-    })
-    this.preferencesPane.on('blur', this.preferencesPane.hide)
-    this.preferencesPane.on('close', event => {
+    this.pane.loadPane = function (file) {
+      this.loadURL(url.format({
+        pathname: path.join(__dirname, 'panes', `${file}.html`),
+        protocol: 'file',
+        slashes: true,
+      }))
+    }
+
+    this.pane.on('blur', this.pane.hide)
+    this.pane.on('close', event => {
       if (this.shouldQuitApp) {
-        return this.preferencesPane = null
+        return this.pane = null
       }
 
       event.preventDefault()
-      this.preferencesPane.hide()
+      this.pane.hide()
     })
+    this.pane.on('ready-to-show', this.pane.show)
 
-    globalShortcut.register('Escape', () => this.preferencesPane.hide())
+    globalShortcut.register('Escape', () => this.pane.hide())
   }
 
   generateShortlink (filename) {
@@ -136,8 +141,8 @@ new class App {
     // Prevent the dock icon from being displayed
     app.dock.hide()
 
-    // Preload the preferences pane in a hidden browser window
-    this.createPreferencesPane()
+    // Preload the pane in a hidden browser window
+    this.createPane()
 
     // Figure out where the tray icon lives
     if (process.env.NODE_ENV === 'development') {
@@ -160,6 +165,10 @@ new class App {
         click: this.showPreferencesPane
       },
       { type: 'separator' },
+      {
+        label: 'About Eidetica',
+        click: this.showAboutPane
+      },
       {
         label: 'Quit',
         click: app.quit
@@ -187,12 +196,20 @@ new class App {
     }]))
   }
 
-  showPreferencesPane () {
-    if (!this.preferencesPane) {
-      this.createPreferencesPane()
+  showAboutPane () {
+    if (!this.pane) {
+      this.createPane()
     }
 
-    this.preferencesPane.show()
+    this.pane.loadPane('about')
+  }
+
+  showPreferencesPane () {
+    if (!this.pane) {
+      this.createPane()
+    }
+
+    this.pane.loadPane('preferences')
   }
 
   startScreenshotListener () {

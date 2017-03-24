@@ -1,4 +1,3 @@
-let { BrowserWindow } = require('electron').remote
 let Config = require('electron-config')
 
 
@@ -8,7 +7,6 @@ let Config = require('electron-config')
 new class PreferencesPane {
   constructor () {
     this.config = new Config
-    this.windows = BrowserWindow.getAllWindows()
 
     this.handleInput = this.handleInput.bind(this)
 
@@ -28,12 +26,6 @@ new class PreferencesPane {
   }
 
   initialize () {
-    this.windows.forEach(win => {
-      let rootEl = document.querySelector('html')
-
-      win.setSize(500, document.body.clientHeight + 22)
-    })
-
     let inputs = document.querySelectorAll('input')
 
     for (let i = 0, length = inputs.length; i < length; i++) {
