@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+  - "7"
+os: osx
+script:
+  - yarn run dist
+cache:
+  yarn: true
