@@ -40,6 +40,7 @@ new class App {
       frame: false,
       transparent: true,
       useContentSize: true,
+      width: 500,
     })
 
     this.preferencesPane.loadURL(path.join('file://', __dirname, 'preferences/', 'index.html'))
