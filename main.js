@@ -22,11 +22,14 @@ const sshpk = require('sshpk')
 
 new class App {
   constructor () {
+    // Generate a new config so we have access to the user's preferences
     this.config = new Config
 
+    // Bind any functions that will always require the app as context
     this.initialize = this.initialize.bind(this)
     this.showPreferencesPane = this.showPreferencesPane.bind(this)
 
+    // Spin up application
     app.on('ready', this.initialize)
     app.on('before-quit', () => this.shouldQuitApp = true)
   }
@@ -113,6 +116,9 @@ new class App {
   initialize () {
     let trayIconPath
 
+    // Set up the default items for all context menus
+    this.setupApplicationMenu()
+
     // Get the screenshot folder
     this.screenshotFolder = app.getPath('desktop')
 
@@ -154,6 +160,23 @@ new class App {
 
     // Start listening for screenshots to be taken
     this.startScreenshotListener()
+  }
+
+  setupApplicationMenu () {
+    Menu.setApplicationMenu(Menu.buildFromTemplate([{
+      label: 'Edit',
+      submenu: [
+        { role: 'undo' },
+        { role: 'redo' },
+        { type: 'separator' },
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' },
+        { role: 'pasteandmatchstyle' },
+        { role: 'delete' },
+        { role: 'selectall' },
+      ]
+    }]))
   }
 
   showPreferencesPane () {
