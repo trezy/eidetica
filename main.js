@@ -52,6 +52,8 @@ new class App {
       event.preventDefault()
       this.preferencesPane.hide()
     })
+
+    globalShortcut.register('Escape', () => this.preferencesPane.hide())
   }
 
   generateShortlink (filename) {
