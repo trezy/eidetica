@@ -37,12 +37,18 @@ new class App {
   createPreferencesPane () {
     this.preferencesPane = new BrowserWindow({
       show: false,
-      titleBarStyle: 'hidden',
+      frame: false,
       transparent: true,
       useContentSize: true,
     })
 
     this.preferencesPane.loadURL(path.join('file://', __dirname, 'preferences/', 'index.html'))
+    this.preferencesPane.on('show', () => {
+      if (!this.preferencesPane.hasBeenCentered) {
+        this.preferencesPane.center()
+        this.preferencesPane.hasBeenCentered = true
+      }
+    })
     this.preferencesPane.on('blur', this.preferencesPane.hide)
     this.preferencesPane.on('close', event => {
       if (this.shouldQuitApp) {
@@ -52,6 +58,8 @@ new class App {
       event.preventDefault()
       this.preferencesPane.hide()
     })
+
+    globalShortcut.register('Escape', () => this.preferencesPane.hide())
   }
 
   generateShortlink (filename) {
