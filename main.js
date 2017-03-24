@@ -43,6 +43,12 @@ new class App {
     })
 
     this.preferencesPane.loadURL(path.join('file://', __dirname, 'preferences/', 'index.html'))
+    this.preferencesPane.on('show', () => {
+      if (!this.preferencesPane.hasBeenCentered) {
+        this.preferencesPane.center()
+        this.preferencesPane.hasBeenCentered = true
+      }
+    })
     this.preferencesPane.on('blur', this.preferencesPane.hide)
     this.preferencesPane.on('close', event => {
       if (this.shouldQuitApp) {
