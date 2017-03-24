@@ -37,7 +37,7 @@ new class App {
   createPreferencesPane () {
     this.preferencesPane = new BrowserWindow({
       show: false,
-      titleBarStyle: 'hidden',
+      frame: false,
       transparent: true,
       useContentSize: true,
     })
