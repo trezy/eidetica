@@ -8,14 +8,23 @@ const {
   systemPreferences,
   Tray,
 } = require('electron')
+const { autoUpdater } = require('electron-updater')
 const Config = require('electron-config')
 const notify = require('electron-main-notification')
 const fs = require('fs')
+const log = require('electron-log')
 const path = require('path')
 const scpClient = require('scp2')
 const shorthash = require('shorthash')
 const sshpk = require('sshpk')
 const url = require('url')
+
+
+
+
+
+// Setup development mode
+let developmentMode = process.env.NODE_ENV === 'development'
 
 
 
@@ -125,6 +134,27 @@ new class App {
   }
 
   initialize () {
+    if (!developmentMode) {
+      autoUpdater.logger = log
+      autoUpdater.logger.transports.file.level = 'info'
+
+      autoUpdater.on('update-available', () => {
+        notify('Eidetica update available', {
+          body: `We're downloading the update now and will restart when we're finished.`
+        })
+      })
+
+      autoUpdater.on('update-downloaded', () => {
+        notify('Restarting Eidetica', {
+          body: `We're restarting Eidetica so you can have all the nifty new features. 😉`
+        })
+
+        autoUpdater.quitAndInstall()
+      })
+
+      autoUpdater.checkForUpdates()
+    }
+
     let trayIconPath
 
     // Set up the default items for all context menus
@@ -220,7 +250,7 @@ new class App {
 
     // Windows
   //  globalShortcut.register('PrintScreen', () => {
-  //    console.log('PrintScreen pressed')
+  //    log.info('PrintScreen pressed')
   //  })
   }
 
@@ -239,10 +269,10 @@ new class App {
               return this.uploadFile(filepath, scpConfig, privateKeys)
             }
 
-            return console.log('Upload error:', error)
+            return log.error('Upload error:', error)
           }
 
-          console.log('Upload success!')
+          log.info('Upload success!')
 
           fs.unlinkSync(filepath)
 
@@ -261,12 +291,12 @@ new class App {
             return this.uploadFile(filepath, scpConfig, privateKeys)
           }
 
-          return console.log('Upload error:', error)
+          return log.error('Upload error:', error)
         }
 
         fs.unlinkSync(filepath)
 
-        console.log('Upload success!')
+        log.info('Upload success!')
 
         clipboard.writeText(shortlink)
 
