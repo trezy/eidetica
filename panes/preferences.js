@@ -50,6 +50,7 @@ new class {
 
   initialize () {
     this.setupInputs([
+      'deleteAfterUpload',
       'host',
       'password',
       'path',
