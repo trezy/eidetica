@@ -1,3 +1,4 @@
+let { app } = require('electron').remote
 let Config = require('electron-config')
 
 
@@ -8,44 +9,60 @@ new class {
   constructor () {
     this.config = new Config
 
-    this.handleInput = this.handleInput.bind(this)
+    this.handleLaunchAtLoginChange = this.handleLaunchAtLoginChange.bind(this)
+    this.handleTextInput = this.handleTextInput.bind(this)
 
     this.initialize()
   }
 
-  handleInput (event) {
+  handleLaunchAtLoginChange (event) {
     let input = event.target
     let prefName = input.getAttribute('name')
 
-    if (input.getAttribute('type') === 'checkbox') {
-      this.config.set(prefName, input.checked)
+    this.config.set(prefName, input.checked)
 
-    } else {
-      this.config.set(prefName, input.value)
-    }
+    app.setLoginItemSettings({
+      openAtLogin: input.checked
+    })
+  }
+
+  handleTextInput (event) {
+    let input = event.target
+    let prefName = input.getAttribute('name')
+
+    this.config.set(prefName, input.value)
   }
 
   initialize () {
-    let inputs = document.querySelectorAll('input')
-
-    for (let i = 0, length = inputs.length; i < length; i++) {
-      let input = inputs[i]
-
-      this.setInputValue(input)
-
-      if (input.getAttribute('type') === 'checkbox') {
-        input.addEventListener('change', this.handleInput)
-
-      } else {
-        input.addEventListener('input', this.handleInput)
-      }
-    }
+    this.setupTextInputs()
+    this.setupLaunchAtLoginInput()
   }
 
-  setInputValue (input) {
-    let prefName = input.getAttribute('name')
+  setTextInputValue (textInput) {
+    let prefName = textInput.getAttribute('name')
     let pref = this.config.get(prefName)
 
-    input.value = pref || ''
+    textInput.value = pref || ''
+  }
+
+  setupLaunchAtLoginInput () {
+    let input = document.querySelector('#launchAtLogin')
+    let currentValue = this.config.get('launchAtLogin')
+
+    input.checked = app.getLoginItemSettings().openAtLogin
+
+    input.addEventListener('change', this.handleLaunchAtLoginChange)
+  }
+
+  setupTextInputs () {
+    let textInputs = document.querySelectorAll('[type=number], [type=password], [type=text], [type=url]')
+
+    for (let i = 0, length = textInputs.length; i < length; i++) {
+      let textInput = textInputs[i]
+
+      this.setTextInputValue(textInput)
+
+      textInput.addEventListener('input', this.handleTextInput)
+    }
   }
 }
