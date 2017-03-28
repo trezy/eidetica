@@ -1,8 +1,29 @@
 ## Contributing to Eidetica
 
-You want to contribute to the project? Awesome! Fork the repo, make some changes, and submit a PR. I don't have any tests yet so I'm obviously not going to be strict about that. If you write some, though, I'll love you forever.
+You want to contribute to the project? Awesome!
 
-### Getting the environment working
+### Things to know
+
+This project adheres to the Contributor Covenant [code of conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to atom@github.com.
+
+### How do
+
+#### Found a bug?
+
+**Create an issue!**
+
+#### Patched a bug?
+
+**Make a pull reqest!** Fork the repo, make some changes, and submit a PR. I don't have any tests yet so I'm obviously not going to be strict about that. If you write some, though, I'll love you forever.
+
+*NOTE*
+Make sure there's an issue created for your bug. If not, go make one!
+
+#### Adding a feature?
+
+Please, *please*, ***please*** create an issue and get some feedback before you make a PR. I don't want you to spend your time writing a feature that I'm not going to accept.
+
+### Getting up and running
 
 I recommend using [Yarn](https://yarnpkg.com/en/) since I try to keep the `yarn.lock` file up-to-date. If you don't use Yarn, you're far more likely to run into dependency version issues.
 
