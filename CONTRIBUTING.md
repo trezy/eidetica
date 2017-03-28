@@ -12,18 +12,14 @@ I recommend using [Yarn](https://yarnpkg.com/en/) since I try to keep the `yarn.
   cd eidetica
   ```
 1. Install dependencies
-  ```
+  ```shell
   yarn install
-  ```
-  or
-  ```
+  # or
   npm install
   ```
 1. Run the app
-  ```
+  ```shell
   yarn run dev
-  ```
-  or
-  ```
+  # or
   npm run dev
   ```
