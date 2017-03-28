@@ -11,11 +11,47 @@ const {
 const Config = require('electron-config')
 const notify = require('electron-main-notification')
 const fs = require('fs')
+const log = require('electron-log')
 const path = require('path')
 const scpClient = require('scp2')
 const shorthash = require('shorthash')
 const sshpk = require('sshpk')
 const url = require('url')
+
+
+
+
+
+// Setup development mode
+let developmentMode = process.env.NODE_ENV === 'development'
+
+
+
+
+
+// Setup autoupdater
+if (!developmentMode) {
+  const { autoUpdater } = require('electron-updater')
+
+  autoUpdater.logger = log
+  autoUpdater.logger.transports.file.level = 'info'
+
+  autoUpdater.on('update-available', () => {
+    notify('Eidetica update available', {
+      body: `We're downloading the update now and will restart when we're finished.`
+    })
+  })
+
+  autoUpdater.on('update-downloaded', () => {
+    notify('Restarting Eidetica', {
+      body: `We're restarting Eidetica so you can have all the nifty new features. 😉`
+    })
+
+    autoUpdater.quitAndInstall()
+  })
+
+  autoUpdater.checkForUpdates()
+}
 
 
 
@@ -36,10 +72,34 @@ new class App {
     app.on('before-quit', () => this.shouldQuitApp = true)
   }
 
+  copyFile (from, to) {
+    return new Promise((resolve, reject) => {
+      let readStream = fs.createReadStream(from)
+      let writeStream = fs.createWriteStream(to)
+
+      readStream.on('error', error => {
+        log.error('Error reading screenshot file:', error)
+        reject(error)
+      })
+
+      writeStream.on('error', error => {
+        log.error('Error copying screenshot file:', error)
+        reject(error)
+      })
+
+      writeStream.on('close', () => {
+        log.info('Copied screenshot to temp directory')
+        resolve()
+      })
+
+      readStream.pipe(writeStream)
+    })
+  }
+
   createPane () {
     this.pane = new BrowserWindow({
-      show: false,
       frame: false,
+      show: false,
       transparent: true,
       useContentSize: true,
       width: 500,
@@ -63,8 +123,6 @@ new class App {
       this.pane.hide()
     })
     this.pane.on('ready-to-show', this.pane.show)
-
-    globalShortcut.register('Escape', () => this.pane.hide())
   }
 
   generateShortlink (filename) {
@@ -114,19 +172,36 @@ new class App {
   }
 
   handleScreenshot (filename) {
-    let scpConfig = this.getSCPConfig()
+    log.info('Handling screenshot')
+
     let filepath = path.resolve(this.screenshotFolder, filename)
     let fileExt = path.extname(filename)
     let hashedFilename = `${shorthash.unique(filename.replace(fileExt, ''))}${fileExt}`
     let hashedFilepath = path.resolve(app.getPath('temp'), hashedFilename)
     let shortlink = this.generateShortlink(hashedFilename)
 
-    fs.renameSync(filepath, hashedFilepath)
+    try {
+      fs.readFileSync(filepath)
+    } catch (error) {
+      log.error('Failed to read file. Aborting.')
+      return
+    }
 
-    this.uploadFile(hashedFilepath, scpConfig, this.getPrivateKeys())
+    log.info(`A screenshot was captured at ${filename.replace('Screen Shot ', '').replace('.png', '')}`)
+
+    this.copyFile(filepath, hashedFilepath)
+    .then(() => {
+      if (this.config.get('deleteAfterUpload')) {
+        fs.unlinkSync(filepath)
+      }
+
+      this.uploadFile(hashedFilepath)
+    })
   }
 
   initialize () {
+    log.info('Initializing app')
+
     let trayIconPath
 
     // Set up the default items for all context menus
@@ -177,6 +252,8 @@ new class App {
 
     // Start listening for screenshots to be taken
     this.startScreenshotListener()
+
+    log.info('App initialized')
   }
 
   setupApplicationMenu () {
@@ -215,60 +292,42 @@ new class App {
   startScreenshotListener () {
     // MacOS
     fs.watch(this.screenshotFolder, (type, filename) => {
-      if (type === 'change' && filename.indexOf('Screen Shot') === 0) {
+      if (filename.indexOf('Screen Shot') === 0) {
         this.handleScreenshot(filename)
       }
     })
 
     // Windows
   //  globalShortcut.register('PrintScreen', () => {
-  //    console.log('PrintScreen pressed')
+  //    log.info('PrintScreen pressed')
   //  })
   }
 
-  uploadFile (filepath, scpConfig, privateKeys = []) {
-    let shortlink = this.generateShortlink(path.basename(filepath))
+  uploadFile (filepath) {
+    let filename = path.basename(filepath)
+    let privateKeys = this.getPrivateKeys()
+    let scpConfig = this.getSCPConfig()
+    let shortlink = this.generateShortlink(filename)
 
-    if (!scpConfig.password) {
-      for (let i = 0, length = privateKeys.length; i < length; i++) {
-        let privateKey = privateKeys.shift()
+    log.info('Uploading file', filename)
 
-        scpConfig.privateKey = privateKey
+    let keysToTry = scpConfig.password ? 1 : privateKeys.length
 
-        scpClient.scp(filepath, scpConfig, error => {
-          if (error) {
-            if (privateKeys.length) {
-              return this.uploadFile(filepath, scpConfig, privateKeys)
-            }
-
-            return console.log('Upload error:', error)
-          }
-
-          console.log('Upload success!')
-
-          fs.unlinkSync(filepath)
-
-          clipboard.writeText(shortlink)
-
-          notify('Screenshot uploaded!', {
-            body: 'The screenshot URL has been copied to your clipboard.'
-          })
-        })
+    for (let i = 0; i < keysToTry; i++) {
+      if (!scpConfig.password) {
+        scpConfig.privateKey = privateKeys[i]
       }
 
-    } else {
       scpClient.scp(filepath, scpConfig, error => {
         if (error) {
           if (privateKeys.length) {
             return this.uploadFile(filepath, scpConfig, privateKeys)
           }
 
-          return console.log('Upload error:', error)
+          return log.error('Upload error:', error)
         }
 
-        fs.unlinkSync(filepath)
-
-        console.log('Upload success!')
+        log.info('Upload success!')
 
         clipboard.writeText(shortlink)
 

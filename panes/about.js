@@ -1,28 +1,26 @@
-let { shell } = require('electron').remote
-let Config = require('electron-config')
+let { app } = require('electron').remote
 
 
 
 
 
-new class PreferencesPane {
-  constructor () {
-    this.initialize()
+new class {
+  _setVersion () {
+    let versionEl = document.querySelector('#version')
+    let version = app.getVersion()
+
+    versionEl.innerHTML = version
   }
 
-  initialize () {
-    let anchors = document.querySelectorAll('a')
+  _setYear () {
+    let yearEl = document.querySelector('#year')
+    let year = (new Date).getFullYear()
 
-    for (let i = 0, length = anchors.length; i < length; i++) {
-      let anchor = anchors[i]
+    yearEl.innerHTML = year
+  }
 
-      anchor.addEventListener('click', event => {
-        let target = event.target
-
-        event.preventDefault()
-
-        shell.openExternal(target.getAttribute('href'))
-      })
-    }
+  constructor () {
+    this._setVersion()
+    this._setYear()
   }
 }

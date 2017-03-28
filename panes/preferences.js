@@ -1,51 +1,122 @@
+let { app } = require('electron').remote
 let Config = require('electron-config')
 
 
 
 
 
-new class PreferencesPane {
+new class {
   constructor () {
     this.config = new Config
 
+    this.handleLaunchAtLoginChange = this.handleLaunchAtLoginChange.bind(this)
     this.handleInput = this.handleInput.bind(this)
 
     this.initialize()
   }
 
-  handleInput (event) {
+  handleLaunchAtLoginChange (event) {
     let input = event.target
     let prefName = input.getAttribute('name')
 
-    if (input.getAttribute('type') === 'checkbox') {
-      this.config.set(prefName, input.checked)
+    this.config.set(prefName, input.checked)
 
-    } else {
-      this.config.set(prefName, input.value)
+    app.setLoginItemSettings({
+      openAtLogin: input.checked
+    })
+  }
+
+  handleInput (event) {
+    let input = event.target
+    let prefName = input.getAttribute('name')
+    let value
+
+    switch (input.getAttribute('type')) {
+      case 'checkbox':
+        value = input.checked
+        break
+
+      case 'email':
+      case 'number':
+      case 'password':
+      case 'url':
+      case 'text':
+      default:
+        value = input.value
     }
+
+    this.config.set(prefName, value)
   }
 
   initialize () {
-    let inputs = document.querySelectorAll('input')
+    this.setupInputs([
+      'deleteAfterUpload',
+      'host',
+      'password',
+      'path',
+      'port',
+      'url',
+      'username',
+    ])
 
-    for (let i = 0, length = inputs.length; i < length; i++) {
-      let input = inputs[i]
+    this.setupLaunchAtLoginInput()
+  }
 
-      this.setInputValue(input)
+  linkInputToConfig (input) {
+    let eventType
 
-      if (input.getAttribute('type') === 'checkbox') {
-        input.addEventListener('change', this.handleInput)
+    this.setInputValue(input)
 
-      } else {
-        input.addEventListener('input', this.handleInput)
-      }
+    switch (input.getAttribute('type')) {
+      case 'checkbox':
+        eventType = 'change'
+        break
+
+      case 'email':
+      case 'number':
+      case 'password':
+      case 'url':
+      case 'text':
+      default:
+        eventType = 'input'
     }
+
+    input.addEventListener(eventType, this.handleInput)
   }
 
   setInputValue (input) {
-    let prefName = input.getAttribute('name')
-    let pref = this.config.get(prefName)
+    let pref = input.getAttribute('name')
+    let value = this.config.get(pref)
 
-    input.value = pref || ''
+    switch (input.getAttribute('type')) {
+      case 'checkbox':
+        input.checked = value
+        break
+
+      case 'email':
+      case 'number':
+      case 'password':
+      case 'url':
+      case 'text':
+      default:
+        input.value = value || ''
+    }
+  }
+
+  setupLaunchAtLoginInput () {
+    let input = document.querySelector('#launchAtLogin')
+    let currentValue = this.config.get('launchAtLogin')
+
+    input.checked = app.getLoginItemSettings().openAtLogin
+
+    input.addEventListener('change', this.handleLaunchAtLoginChange)
+  }
+
+  setupInputs (inputs) {
+    inputs.forEach(inputID => {
+      let input = document.querySelector(`#${inputID}`)
+
+      this.linkInputToConfig(input)
+    })
   }
 }

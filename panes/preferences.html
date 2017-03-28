@@ -13,38 +13,49 @@
       <table>
         <tbody>
           <tr>
-            <th><label>Host:</label></th>
-            <td><input name="host" placeholder="eidetica.io" type="url"></td>
+            <th><label for="host">Host:</label></th>
+            <td><input id="host" name="host" placeholder="eidetica.io" type="url"></td>
           </tr>
 
           <tr>
-            <th><label>Port:</label></th>
-            <td><input name="port" placeholder="22" type="number"></td>
+            <th><label for="port">Port:</label></th>
+            <td><input id="port" name="port" placeholder="22" type="number"></td>
           </tr>
 
           <tr>
-            <th><label>Username:</label></th>
-            <td><input name="username" placeholder="eidetica-user" type="text"></td>
+            <th><label for="username">Username:</label></th>
+            <td><input id="username" name="username" placeholder="eidetica-user" type="text"></td>
           </tr>
 
           <tr>
-            <th><label>Password:</label></th>
-            <td><input name="password" placeholder="Using SSH private key" type="password"></td>
+            <th><label for="password">Password:</label></th>
+            <td><input id="password" name="password" placeholder="Using SSH private key" type="password"></td>
           </tr>
 
           <tr>
-            <th><label>Path:</label></th>
-            <td><input name="path" placeholder="/var/www/uploads/" type="text"></td>
+            <th><label for="path">Path:</label></th>
+            <td><input id="path" name="path" placeholder="/var/www/uploads/" type="text"></td>
           </tr>
 
           <tr>
-            <th><label>URL:</label></th>
-            <td><input name="url" placeholder="http://eidetica.io/screenshot" type="url"></td>
+            <th><label for="url">URL:</label></th>
+            <td><input id="url" name="url" placeholder="http://eidetica.io/screenshot" type="url"></td>
+          </tr>
+
+          <tr>
+            <th><label for="deleteAfterUpload">Delete screenshots after upload?</label></th>
+            <td><input id="deleteAfterUpload" name="deleteAfterUpload" type="checkbox"></td>
+          </tr>
+
+          <tr>
+            <th><label for="launchAtLogin">Launch at login?</label></th>
+            <td><input id="launchAtLogin" name="launchAtLogin" type="checkbox"></td>
           </tr>
         </tbody>
       </table>
     </form>
 
+    <script src="pane.js"></script>
     <script src="preferences.js"></script>
   </body>
 </html>
