@@ -15,6 +15,7 @@ const path = require('path')
 
 
 let createPane = require('./modules/common/createPane')
+let getScreenshotFolder = require('./modules/common/getScreenshotFolder')
 let handleScreenshot = require('./modules/common/handleScreenshot')
 let setupApplicationMenu = require('./modules/common/setupApplicationMenu')
 let setupAutoUpdater = require('./modules/common/setupAutoUpdater')
@@ -58,9 +59,6 @@ new class App {
     // Set up the default items for all context menus
     setupApplicationMenu()
 
-    // Get the screenshot folder
-    this.screenshotFolder = app.getPath('desktop')
-
     // Preload the pane in a hidden browser window
     this.pane = createPane()
 
@@ -98,7 +96,7 @@ new class App {
 
   startScreenshotListener () {
     // MacOS
-    fs.watch(this.screenshotFolder, (type, filename) => {
+    fs.watch(getScreenshotFolder(), (type, filename) => {
       if (filename.indexOf('Screen Shot') === 0) {
         handleScreenshot(filename)
       }
