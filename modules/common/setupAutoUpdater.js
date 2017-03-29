@@ -1,5 +1,6 @@
 const { app } = require('electron')
 const { autoUpdater } = require('electron-updater')
+const log = require('electron-log')
 const notify = require('electron-main-notification')
 
 
