@@ -18,6 +18,7 @@ let createPane = require('./modules/common/createPane')
 let handleScreenshot = require('./modules/common/handleScreenshot')
 let setupApplicationMenu = require('./modules/common/setupApplicationMenu')
 let setupAutoUpdater = require('./modules/common/setupAutoUpdater')
+let setupTray = require('./modules/common/setupTray')
 let setupUploadListener = require('./modules/common/setupUploadListener')
 
 
@@ -51,7 +52,8 @@ new class App {
   initialize () {
     log.info('Initializing app')
 
-    let trayIconPath
+    // Prevent the dock icon from being displayed
+    app.dock.hide()
 
     // Set up the default items for all context menus
     setupApplicationMenu()
@@ -59,31 +61,13 @@ new class App {
     // Get the screenshot folder
     this.screenshotFolder = app.getPath('desktop')
 
-    // Track whether or not we should exit or just hide the preferences pane
-    this.shouldQuitApp = false
-
-    // Prevent the dock icon from being displayed
-    app.dock.hide()
-
     // Preload the pane in a hidden browser window
     this.pane = createPane()
 
-    // Figure out where the tray icon lives
-    if (process.env.NODE_ENV === 'development') {
-      trayIconPath = path.resolve(app.getAppPath(), 'assets', 'tray-iconTemplate.png')
-    } else {
-      trayIconPath = path.resolve(process.resourcesPath, 'tray-iconTemplate.png')
-    }
+    // Start listening for screenshots to be taken
+    this.startScreenshotListener()
 
-    // Generate the tray icon as a native image
-    this.trayIcon = nativeImage.createFromPath(path.resolve(trayIconPath))
-
-    // setting the tray icon as a template image means macOS will handle changing it from white to black for us
-    this.trayIcon.setTemplateImage(true)
-
-    this.tray = new Tray(this.trayIcon)
-    this.tray.setToolTip(app.getName())
-    this.tray.setContextMenu(Menu.buildFromTemplate([
+    this.tray = setupTray(Menu.buildFromTemplate([
       {
         label: 'Preferences...',
         click: this.showPreferencesPane
@@ -98,9 +82,6 @@ new class App {
         click: app.quit
       }
     ]))
-
-    // Start listening for screenshots to be taken
-    this.startScreenshotListener()
 
     setupUploadListener()
 
