@@ -28,6 +28,9 @@ module.exports = function () {
       if (files.length > 1) {
         zipFiles(files)
         .then(uploadFile)
+
+      } else {
+        uploadFile(files[0])
       }
 
     } else {
