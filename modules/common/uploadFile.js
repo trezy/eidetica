@@ -42,8 +42,8 @@ module.exports = function (filepath) {
 
       clipboard.writeText(generateShortlink(filename))
 
-      notify('Screenshot uploaded!', {
-        body: 'The screenshot URL has been copied to your clipboard.'
+      notify('File uploaded!', {
+        body: 'The URL has been copied to your clipboard.'
       })
     })
 
