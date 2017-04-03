@@ -18,6 +18,7 @@ let createPane = require('./modules/common/createPane')
 let handleScreenshot = require('./modules/common/handleScreenshot')
 let setupApplicationMenu = require('./modules/common/setupApplicationMenu')
 let setupAutoUpdater = require('./modules/common/setupAutoUpdater')
+let setupUploadListener = require('./modules/common/setupUploadListener')
 
 
 
@@ -100,6 +101,8 @@ new class App {
 
     // Start listening for screenshots to be taken
     this.startScreenshotListener()
+
+    setupUploadListener()
 
     log.info('App initialized')
   }
