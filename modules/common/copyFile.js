@@ -22,7 +22,7 @@ module.exports = function (from, to) {
 
     writeStream.on('close', () => {
       log.info('Copied screenshot to temp directory')
-      resolve()
+      resolve(to)
     })
 
     readStream.pipe(writeStream)
