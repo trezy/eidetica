@@ -7,7 +7,7 @@
     "email": "tre@trezy.com",
     "url": "trezy.com"
   },
-  "version": "1.3.2",
+  "version": "1.4.0",
   "main": "main.js",
   "repository": {
     "type": "git",
