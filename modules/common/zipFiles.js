@@ -9,6 +9,12 @@ const shorthash = require('shorthash')
 
 
 
+const generateTempFilepath = require('./generateTempFilepath')
+
+
+
+
+
 module.exports = function (files) {
   return new Promise((resolve, reject) => {
     log.info('Zipping files:', files.join(', '))
@@ -16,12 +22,11 @@ module.exports = function (files) {
     let archive = archiver('zip', {
       store: true
     })
-    let hash = shorthash.unique((new Date()).toString())
-    let hashedFilepath = path.resolve(app.getPath('temp'), hash + '.zip')
-    let output = fs.createWriteStream(hashedFilepath)
+    let filepath = generateTempFilepath('zip')
+    let output = fs.createWriteStream(filepath)
 
     output.on('close', () => {
-      resolve(hashedFilepath)
+      resolve(filepath)
 
       log.info('Finished archiving files.')
     })
