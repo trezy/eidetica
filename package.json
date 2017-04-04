@@ -8,7 +8,7 @@
     "url": "trezy.com"
   },
   "version": "1.4.1",
-  "main": "main.js",
+  "main": "bootstrap.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:trezy/eidetica.git"
@@ -16,6 +16,9 @@
   "license": "MIT",
   "dependencies": {
     "archiver": "^1.3.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "electron-compile": "^6.2.0",
     "electron-config": "^0.2.1",
     "electron-log": "^2.0.0",
     "electron-main-notification": "^1.0.1",
@@ -26,7 +29,8 @@
   },
   "devDependencies": {
     "electron": "1.6.4",
-    "electron-builder": "^15.6.2"
+    "electron-builder": "^15.6.2",
+    "electron-compilers": "^5.7.0"
   },
   "scripts": {
     "dev": "NODE_ENV='development' npm run start",
