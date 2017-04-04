@@ -2,7 +2,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
 }
@@ -14,11 +15,7 @@ html {
 body {
   align-items: stretch;
   background-color: rgba(0, 0, 0, 0.5);
-  background-image: linear-gradient(
-    to right,
-    hsla(0, 0%, 10%, 0.8),
-    hsla(214, 100%, 33%, 0.8)
-  );
+  background-image: linear-gradient( to right, hsla(0, 0%, 10%, 0.8), hsla(214, 100%, 33%, 0.8));
   color: white;
   display: flex;
   font-family: 'Helvetica Neue', sans-serif;
@@ -30,6 +27,7 @@ body {
 }
 
 h1 {
+  font-family: Ailerons;
   flex-shrink: 0;
   font-size: 3em;
   margin-bottom: 1rem;
@@ -43,12 +41,7 @@ form {
 
 input {
   background-color: transparent;
-  background-image: linear-gradient(
-    to top,
-    white,
-    white 1px,
-    transparent 1px
-  );
+  background-image: linear-gradient( to top, white, white 1px, transparent 1px);
   background-position: -1000px 0;
   background-repeat: no-repeat;
   border: none;
@@ -62,10 +55,10 @@ input {
   padding: 1rem;
   transition: background-position 0.5s ease-out;
   width: 100%;
-}
 
-input:focus {
-  background-position: 0 0;
+  &:focus {
+    background-position: 0 0;
+  }
 }
 
 table {
