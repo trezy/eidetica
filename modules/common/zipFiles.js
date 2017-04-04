@@ -1,15 +1,15 @@
-const { app } = require('electron')
-const archiver = require('archiver')
-const fs = require('fs')
-const log = require('electron-log')
-const path = require('path')
-const shorthash = require('shorthash')
+import { app } from 'electron'
+import archiver from 'archiver'
+import fs from 'fs'
+import log from 'electron-log'
+import path from 'path'
+import shorthash from 'shorthash'
 
 
 
 
 
-const generateTempFilepath = require('./generateTempFilepath')
+import generateTempFilepath from './generateTempFilepath'
 
 
 

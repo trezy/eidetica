@@ -1,10 +1,10 @@
-const {
+import {
   app,
-  BrowserWindow,
-} = require('electron')
-const log = require('electron-log')
-const path = require('path')
-const url = require('url')
+  BrowserWindow
+} from 'electron'
+import log from 'electron-log'
+import path from 'path'
+import url from 'url'
 
 
 

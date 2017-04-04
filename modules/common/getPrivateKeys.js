@@ -1,6 +1,6 @@
-const fs = require('fs')
-const path = require('path')
-const sshpk = require('sshpk')
+import fs from 'fs'
+import path from 'path'
+import sshpk from 'sshpk'
 
 
 

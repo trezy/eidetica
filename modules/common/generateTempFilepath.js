@@ -1,6 +1,6 @@
-const { app } = require('electron')
-const path = require('path')
-const shorthash = require('shorthash')
+import { app } from 'electron'
+import path from 'path'
+import shorthash from 'shorthash'
 
 
 

@@ -1,5 +1,5 @@
-const fs = require('fs')
-const log = require('electron-log')
+import fs from 'fs'
+import log from 'electron-log'
 
 
 

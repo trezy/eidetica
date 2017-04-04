@@ -1,16 +1,16 @@
-const { clipboard } = require('electron')
-const log = require('electron-log')
-const notify = require('electron-main-notification')
-const path = require('path')
-const scpClient = require('scp2')
+import { clipboard } from 'electron'
+import log from 'electron-log'
+import notify from 'electron-main-notification'
+import path from 'path'
+import scpClient from 'scp2'
 
 
 
 
 
-const generateShortlink = require('./generateShortlink')
-const getPrivateKeys = require('./getPrivateKeys')
-const getSCPConfig = require('./getSCPConfig')
+import generateShortlink from './generateShortlink'
+import getPrivateKeys from './getPrivateKeys'
+import getSCPConfig from './getSCPConfig'
 
 
 

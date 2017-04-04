@@ -1,10 +1,10 @@
-const {
+import {
   clipboard,
   globalShortcut
-} = require('electron')
-const Config = require('electron-config')
-const log = require('electron-log')
-const path = require('path')
+} from 'electron'
+import Config from 'electron-config'
+import log from 'electron-log'
+import path from 'path'
 
 
 

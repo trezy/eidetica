@@ -1,24 +1,24 @@
-const {
+import {
   app,
   globalShortcut,
   Menu,
   nativeImage,
-  Tray,
-} = require('electron')
-const notify = require('electron-main-notification')
-const fs = require('fs')
-const log = require('electron-log')
-const path = require('path')
+  Tray
+} from 'electron'
+import notify from 'electron-main-notification'
+import fs from 'fs'
+import log from 'electron-log'
+import path from 'path'
 
 
 
 
 
-let createPane = require('./modules/common/createPane')
-let handleScreenshot = require('./modules/common/handleScreenshot')
-let setupApplicationMenu = require('./modules/common/setupApplicationMenu')
-let setupAutoUpdater = require('./modules/common/setupAutoUpdater')
-let setupUploadListener = require('./modules/common/setupUploadListener')
+import createPane from './modules/common/createPane'
+import handleScreenshot from './modules/common/handleScreenshot'
+import setupApplicationMenu from './modules/common/setupApplicationMenu'
+import setupAutoUpdater from './modules/common/setupAutoUpdater'
+import setupUploadListener from './modules/common/setupUploadListener'
 
 
 

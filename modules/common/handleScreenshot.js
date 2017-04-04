@@ -1,18 +1,18 @@
-const { app } = require('electron')
-const Config = require('electron-config')
-const fs = require('fs')
-const log = require('electron-log')
-const path = require('path')
-const shorthash = require('shorthash')
+import { app } from 'electron'
+import Config from 'electron-config'
+import fs from 'fs'
+import log from 'electron-log'
+import path from 'path'
+import shorthash from 'shorthash'
 
 
 
 
 
-const copyFile = require('./copyFile')
-const generateShortlink = require('./generateShortlink')
-const generateTempFilepath = require('./generateTempFilepath')
-const uploadFile = require('./uploadFile')
+import copyFile from './copyFile'
+import generateShortlink from './generateShortlink'
+import generateTempFilepath from './generateTempFilepath'
+import uploadFile from './uploadFile'
 
 
 

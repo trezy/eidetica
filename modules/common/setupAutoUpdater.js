@@ -1,7 +1,7 @@
-const { app } = require('electron')
-const { autoUpdater } = require('electron-updater')
-const log = require('electron-log')
-const notify = require('electron-main-notification')
+import { app } from 'electron'
+import { autoUpdater } from 'electron-updater'
+import log from 'electron-log'
+import notify from 'electron-main-notification'
 
 
 

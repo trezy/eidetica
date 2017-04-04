@@ -1,4 +1,4 @@
-const { Menu } = require('electron')
+import { Menu } from 'electron'
 
 
 

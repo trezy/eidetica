@@ -1,4 +1,4 @@
-const Config = require('electron-config')
+import Config from 'electron-config'
 
 
 
