@@ -11,6 +11,7 @@ const shorthash = require('shorthash')
 
 const copyFile = require('./copyFile')
 const generateShortlink = require('./generateShortlink')
+const generateTempFilepath = require('./generateTempFilepath')
 const uploadFile = require('./uploadFile')
 
 
@@ -28,9 +29,8 @@ module.exports = function (filename) {
 
   let filepath = path.resolve(app.getPath('desktop'), filename)
   let fileExt = path.extname(filename)
-  let hashedFilename = `${shorthash.unique(filename.replace(fileExt, ''))}${fileExt}`
-  let hashedFilepath = path.resolve(app.getPath('temp'), hashedFilename)
-  let shortlink = generateShortlink(hashedFilename)
+  let tempFilepath = generateTempFilepath(fileExt)
+  let shortlink = generateShortlink(path.basename(tempFilepath))
 
   try {
     fs.readFileSync(filepath)
@@ -41,9 +41,9 @@ module.exports = function (filename) {
 
   log.info(`A screenshot was captured at ${filename.replace('Screen Shot ', '').replace('.png', '')}`)
 
-  copyFile(filepath, hashedFilepath)
+  copyFile(filepath, tempFilepath)
   .then(() => {
-    return uploadFile(hashedFilepath)
+    return uploadFile(tempFilepath)
   })
   .then(() => {
     if (config.get('deleteAfterUpload')) {
