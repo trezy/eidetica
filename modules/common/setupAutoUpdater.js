@@ -28,5 +28,11 @@ module.exports = function () {
     })
 
     autoUpdater.checkForUpdates()
+
+    // Check for updates every hour
+    setInterval(
+      autoUpdater.checkForUpdates,
+      3600 * 1000 // [seconds in an hour] * milliseconds
+    )
   }
 }
