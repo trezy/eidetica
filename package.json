@@ -7,7 +7,7 @@
     "email": "tre@trezy.com",
     "url": "trezy.com"
   },
-  "version": "1.4.1",
+  "version": "1.4.2",
   "main": "main.js",
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "electron": "1.6.4",
-    "electron-builder": "^15.6.2"
+    "electron-builder": "^16.6.1"
   },
   "scripts": {
     "dev": "NODE_ENV='development' npm run start",
