@@ -13,8 +13,10 @@ import url from 'url'
 module.exports = function () {
   let pane = new BrowserWindow({
     frame: false,
+    height: 500,
+    resizable: false,
     show: false,
-    transparent: true,
+    transparent: false,
     useContentSize: true,
     width: 500,
   })
