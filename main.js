@@ -68,6 +68,9 @@ new class App {
     // Preload the pane in a hidden browser window
     this.pane = createPane()
 
+    // Attach the pane to the app object to make it easier to access from inside the pane itself
+    app.pane = this.pane
+
     // Figure out where the tray icon lives
     if (process.env.NODE_ENV === 'development') {
       trayIconPath = path.resolve(app.getAppPath(), 'assets', 'tray-iconTemplate.png')
