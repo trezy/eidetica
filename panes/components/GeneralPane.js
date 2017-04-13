@@ -1,3 +1,4 @@
+import { app } from 'electron'
 import {
   Checkbox,
   Label,
@@ -237,6 +238,10 @@ export default class extends Pane {
     config.set('filenameHandling', this.state.filenameHandling)
     config.set('launchAtLogin', this.state.launchAtLogin)
     config.set('shortcut', this.state.shortcut)
+
+    app.setLoginItemSettings({
+      openAtLogin: this.state.launchAtLogin
+    })
   }
 
 
@@ -271,7 +276,7 @@ export default class extends Pane {
 
       autoUpdate: config.get('autoUpdate'),
       filenameHandling: config.get('filenameHandling'),
-      launchAtLogin: config.get('launchAtLogin'),
+      launchAtLogin: app.getLoginItemSettings().openAtLogin,
       shortcut: config.get('shortcut'),
     }
   }
@@ -336,7 +341,9 @@ export default class extends Pane {
               </th>
 
               <td>
-                <select onChange={event => this.setState({ filenameHandling: event.target.value })}>
+                <select
+                  onChange={event => this.setState({ filenameHandling: event.target.value })}
+                  value={this.state.filenameHandling}>
                   <option value="original">Original Filename</option>
                   <option value="hash">Random Hash</option>
                   <option value="original+hash">Original Filename + Random Hash</option>
@@ -351,6 +358,7 @@ export default class extends Pane {
 
               <td>
                 <Checkbox
+                  defaultChecked={this.state.launchAtLogin}
                   label="Launch at login"
                   onChange={event => this.setState({ launchAtLogin: event.target.checked })}
                   />
