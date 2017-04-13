@@ -16,7 +16,7 @@ import Pane from './Pane'
 
 
 
-let config = new require('electron-config')
+let config = new (require('electron-config'))
 
 
 
@@ -232,6 +232,13 @@ export default class extends Pane {
     })
   }
 
+  _updateConfig () {
+    config.set('autoUpdate', this.state.autoUpdate)
+    config.set('filenameHandling', this.state.filenameHandling)
+    config.set('launchAtLogin', this.state.launchAtLogin)
+    config.set('shortcut', this.state.shortcut)
+  }
+
 
 
 
@@ -239,6 +246,10 @@ export default class extends Pane {
   /***************************************************************************\
     Public methods
   \***************************************************************************/
+
+  componentWillUpdate (nextState, nextProps) {
+    this._updateConfig()
+  }
 
   constructor (props) {
     super(props)
@@ -257,7 +268,11 @@ export default class extends Pane {
       recordedShortcut: [],
       recordingShortcut: false,
       shiftIsPressed: false,
-      shortcut: 'Command+Option+U'
+
+      autoUpdate: config.get('autoUpdate'),
+      filenameHandling: config.get('filenameHandling'),
+      launchAtLogin: config.get('launchAtLogin'),
+      shortcut: config.get('shortcut'),
     }
   }
 
@@ -276,6 +291,7 @@ export default class extends Pane {
             &nbsp;
             &nbsp;
             &nbsp;
+
             <Link
               onClick={() => this._cancelRecording()} >
               Cancel
@@ -320,10 +336,10 @@ export default class extends Pane {
               </th>
 
               <td>
-                <select>
-                  <option>Original Filename</option>
-                  <option>Random Hash</option>
-                  <option>Original Filename + Random Hash</option>
+                <select onChange={event => this.setState({ filenameHandling: event.target.value })}>
+                  <option value="original">Original Filename</option>
+                  <option value="hash">Random Hash</option>
+                  <option value="original+hash">Original Filename + Random Hash</option>
                 </select>
               </td>
             </tr>
@@ -336,10 +352,12 @@ export default class extends Pane {
               <td>
                 <Checkbox
                   label="Launch at login"
+                  onChange={event => this.setState({ launchAtLogin: event.target.checked })}
                   />
 
                 <Checkbox
                   label="Automatically check for updates"
+                  onChange={event => this.setState({ autoUpdate: event.target.checked })}
                   />
               </td>
             </tr>
