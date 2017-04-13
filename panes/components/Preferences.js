@@ -36,9 +36,6 @@ export default class extends React.Component {
     this.handleMinimize = this.handleMinimize.bind(this)
     this.handleResize = this.handleResize.bind(this)
 
-//    this.componentDidMount = this.resizeWindow
-//    this.componentDidUpdate = this.resizeWindow
-
     this.state = {
       isFullscreen: false,
       selected: 'general'

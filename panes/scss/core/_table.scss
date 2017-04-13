@@ -1,11 +1,17 @@
 table {
   width: 100%;
 
-  th {
-    font-weight: inherit;
-    width: 30%;
-    text-align: right;
+  tr {
+    margin-bottom: 1rem;
   }
 
-  td {}
+  th {
+    font-weight: inherit;
+    text-align: right;
+    width: 30%;
+  }
+
+  th, td {
+    padding: 0.5rem;
+  }
 }
