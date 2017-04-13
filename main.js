@@ -39,6 +39,27 @@ setupAutoUpdater()
 
 new class App {
   constructor () {
+    // Setup default configs
+    new (require('electron-config'))({
+      defaults: {
+        // App settings
+        autoUpdate: true,
+        deleteAfterUpload: true,
+        filenameHandling: 'hash',
+        hashBeforeUpload: true,
+        launchAtLogin: true,
+        shortcut: 'Super+Control+U',
+
+        // Server settings
+        host: '',
+        password: '',
+        path: '',
+        port: '',
+        url: '',
+        username: '',
+      }
+    })
+
     // Bind any functions that will always require the app as context
     this.initialize = this.initialize.bind(this)
     this.showAboutPane = this.showAboutPane.bind(this)
