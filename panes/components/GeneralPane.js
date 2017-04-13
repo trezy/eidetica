@@ -1,4 +1,4 @@
-import { app } from 'electron'
+let { app } = require('electron').remote
 import {
   Checkbox,
   Label,
@@ -233,17 +233,6 @@ export default class extends Pane {
     })
   }
 
-  _updateConfig () {
-    config.set('autoUpdate', this.state.autoUpdate)
-    config.set('filenameHandling', this.state.filenameHandling)
-    config.set('launchAtLogin', this.state.launchAtLogin)
-    config.set('shortcut', this.state.shortcut)
-
-    app.setLoginItemSettings({
-      openAtLogin: this.state.launchAtLogin
-    })
-  }
-
 
 
 
@@ -252,8 +241,25 @@ export default class extends Pane {
     Public methods
   \***************************************************************************/
 
-  componentWillUpdate (nextState, nextProps) {
-    this._updateConfig()
+  componentWillUpdate (nextProps, nextState) {
+    let settings = [
+      'autoUpdate',
+      'filenameHandling',
+      'launchAtLogin',
+      'shortcut',
+    ]
+
+    settings.forEach(setting => {
+      if (this.state[setting] !== nextState[setting]) {
+        config.set(setting, nextState[setting])
+      }
+    })
+
+    if (this.state.launchAtLogin !== nextState.launchAtLogin) {
+      app.setLoginItemSettings({
+        openAtLogin: nextState.launchAtLogin
+      })
+    }
   }
 
   constructor (props) {
@@ -364,6 +370,7 @@ export default class extends Pane {
                   />
 
                 <Checkbox
+                  defaultChecked={this.state.autoUpdate}
                   label="Automatically check for updates"
                   onChange={event => this.setState({ autoUpdate: event.target.checked })}
                   />
