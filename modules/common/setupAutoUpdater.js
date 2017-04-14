@@ -7,6 +7,12 @@ import notify from 'electron-main-notification'
 
 
 
+let config = new (require('electron-config'))
+
+
+
+
+
 module.exports = function () {
   // Setup autoupdater
   if (process.env.NODE_ENV !== 'development') {
@@ -27,11 +33,17 @@ module.exports = function () {
       autoUpdater.quitAndInstall()
     })
 
-    autoUpdater.checkForUpdates()
+    if (config.get('autoUpdate')) {
+      autoUpdater.checkForUpdates()
+    }
 
     // Check for updates every hour
     setInterval(
-      autoUpdater.checkForUpdates,
+      () => {
+        if (config.get('autoUpdate')) {
+          autoUpdater.checkForUpdates()
+        }
+      },
       3600 * 1000 // [seconds in an hour] * milliseconds
     )
   }
