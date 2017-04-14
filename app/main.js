@@ -61,7 +61,6 @@ new class App {
 
     // Bind any functions that will always require the app as context
     this.initialize = this.initialize.bind(this)
-    this.showAboutPane = this.showAboutPane.bind(this)
     this.showPreferencesPane = this.showPreferencesPane.bind(this)
 
     // Spin up application
@@ -111,11 +110,6 @@ new class App {
         label: 'Preferences...',
         click: this.showPreferencesPane
       },
-      { type: 'separator' },
-      {
-        label: `About ${app.getName()}`,
-        click: this.showAboutPane
-      },
       {
         label: 'Quit',
         click: app.quit
@@ -130,12 +124,8 @@ new class App {
     log.info('App initialized')
   }
 
-  showAboutPane () {
-    this.pane.loadPane('about')
-  }
-
   showPreferencesPane () {
-    this.pane.loadPane('preferences')
+    this.pane.loadPane('index')
   }
 
   startScreenshotListener () {
