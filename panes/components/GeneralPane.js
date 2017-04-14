@@ -262,6 +262,7 @@ export default class extends Pane {
   componentWillUpdate (nextProps, nextState) {
     let settings = [
       'autoUpdate',
+      'deleteAfterUpload',
       'filenameHandling',
       'launchAtLogin',
       'shortcut',
@@ -304,6 +305,7 @@ export default class extends Pane {
       shiftIsPressed: false,
 
       autoUpdate: config.get('autoUpdate'),
+      deleteAfterUpload: config.get('deleteAfterUpload'),
       filenameHandling: config.get('filenameHandling'),
       launchAtLogin: app.getLoginItemSettings().openAtLogin,
       shortcut: config.get('shortcut'),
@@ -396,6 +398,20 @@ export default class extends Pane {
                   defaultChecked={this.state.autoUpdate}
                   label="Automatically check for updates"
                   onChange={event => this.setState({ autoUpdate: event.target.checked })}
+                  />
+              </td>
+            </tr>
+
+            <tr>
+              <th style={{ verticalAlign: 'text-top' }}>
+                <Label>Miscellaneous:</Label>
+              </th>
+
+              <td>
+                <Checkbox
+                  defaultChecked={this.state.deleteAfterUpload}
+                  label="Delete after upload"
+                  onChange={event => this.setState({ deleteAfterUpload: event.target.checked })}
                   />
               </td>
             </tr>
