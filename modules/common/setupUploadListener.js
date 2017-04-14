@@ -2,6 +2,7 @@ import {
   clipboard,
   globalShortcut
 } from 'electron'
+import fs from 'fs'
 import log from 'electron-log'
 import path from 'path'
 
@@ -28,24 +29,31 @@ module.exports = function () {
     if (clipboardFileContents) {
       let matches = clipboardFileContents.match(/<string>.*<\/string>/gi)
       let files = matches.map(string => string.replace(/<\/*string>/gi, ''))
+      let promise
 
       if (files.length > 1) {
-        zipFiles(files)
-        .then(uploadFile)
+        promise = zipFiles(files)
 
       } else {
-        let filepath = files[0]
+        let isDir = false
 
-        if (config.get('hashBeforeUpload')) {
-          filepath = generateTempFilepath(path.extname(files[0]))
+        try {
+          fs.readdirSync(files[0])
+          isDir = true
+        } catch (error) {}
 
-          copyFile(files[0], filepath)
-          .then(uploadFile)
-
+        if (isDir) {
+          promise = zipFiles(files)
         } else {
-          uploadFile(filepath)
+          promise = copyFile(files[0], generateTempFilepath(path.extname(files[0]), files[0]))
         }
       }
+
+      promise
+      .then(uploadFile)
+      .catch(error => {
+        log.error(error)
+      })
 
     } else {
       createTextFile(clipboard.readText())

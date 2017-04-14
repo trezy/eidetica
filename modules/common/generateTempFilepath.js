@@ -6,14 +6,39 @@ import shorthash from 'shorthash'
 
 
 
-module.exports = function (extension) {
-  if (extension.indexOf('.') !== 0) {
-    extension = '.' + extension
+let config = new (require('electron-config'))
+
+
+
+
+
+module.exports = function (extension, filename) {
+  let filenameHandling = config.get('filenameHandling')
+  let filepath
+  let newFilename
+  let originalFilename
+
+  if (filename) {
+    originalFilename = path.parse(filename)
   }
 
-  let hash = shorthash.unique((new Date()).toString())
-  let filename = hash + extension
-  let hashedFilepath = path.resolve(app.getPath('temp'), filename)
+  if (!filename || filenameHandling.indexOf('hash') !== -1) {
+    filename = `${shorthash.unique((new Date()).toString())}`
 
-  return hashedFilepath
+    if (filenameHandling === 'original+hash' && originalFilename) {
+      filename = `${originalFilename.name}-${filename}`
+    }
+
+    if (extension) {
+      if (extension.indexOf('.') === 0) {
+        extension = extension.replace(/^\./, '')
+      }
+
+      filename += `.${extension}`
+    }
+  }
+
+  filepath = path.resolve(app.getPath('temp'), filename)
+
+  return filepath
 }

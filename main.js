@@ -46,7 +46,6 @@ new class App {
         autoUpdate: true,
         deleteAfterUpload: true,
         filenameHandling: 'hash',
-        hashBeforeUpload: true,
         launchAtLogin: true,
         shortcut: 'Super+Control+U',
 

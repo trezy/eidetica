@@ -28,8 +28,7 @@ module.exports = function (filename) {
   log.info('Handling screenshot')
 
   let filepath = path.resolve(app.getPath('desktop'), filename)
-  let fileExt = path.extname(filename)
-  let tempFilepath = generateTempFilepath(fileExt)
+  let tempFilepath = generateTempFilepath(path.extname(filename), filename)
   let shortlink = generateShortlink(path.basename(tempFilepath))
 
   try {
@@ -42,9 +41,7 @@ module.exports = function (filename) {
   log.info(`A screenshot was captured at ${filename.replace('Screen Shot ', '').replace('.png', '')}`)
 
   copyFile(filepath, tempFilepath)
-  .then(() => {
-    return uploadFile(tempFilepath)
-  })
+  .then(uploadFile)
   .then(() => {
     if (config.get('deleteAfterUpload')) {
       fs.unlinkSync(filepath)
