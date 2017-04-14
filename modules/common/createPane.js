@@ -10,6 +10,12 @@ import url from 'url'
 
 
 
+import setupUploadListener from './setupUploadListener'
+
+
+
+
+
 module.exports = function () {
   let pane = new BrowserWindow({
     frame: false,
@@ -21,6 +27,8 @@ module.exports = function () {
     width: 500,
   })
 
+//  pane.openDevTools()
+
   pane.loadPane = function (pane) {
     this.loadURL(url.format({
       pathname: path.join(__dirname, '..', '..', 'panes', `${pane}.html`),
@@ -31,6 +39,8 @@ module.exports = function () {
 
   pane.on('blur', pane.hide)
   pane.on('ready-to-show', pane.show)
+  pane.on('shortcut-reset', setupUploadListener)
+  pane.on('shortcut-updated', setupUploadListener)
 
   return pane
 }

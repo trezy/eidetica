@@ -1,4 +1,8 @@
-let { app } = require('electron').remote
+let {
+  app,
+  BrowserWindow,
+  globalShortcut
+} = require('electron').remote
 import {
   Checkbox,
   Label,
@@ -33,6 +37,8 @@ export default class extends Pane {
     this.setState({
       recordingShortcut: false,
     })
+
+    BrowserWindow.getFocusedWindow().emit('shortcut-reset')
   }
 
   _handleKeydown (event) {
@@ -40,18 +46,21 @@ export default class extends Pane {
       let addToShortcut
       let key
       let newState = {
-        recordedShortcut: this.state.recordedShortcut.slice(0)
+        recordedShortcut: this.state.recordedShortcut.slice(0),
+        recordingShortcut: true
       }
+      let shouldCancel = false
 
       switch (event.key) {
+        case '+':
+          addToShortcut = 'Plus'
+          newState.keyIsPressed = '+'
+          newState.recordingShortcut = false
+          break
+
         case 'Alt':
           addToShortcut = 'Alt'
           newState.altIsPressed = true
-          break
-
-        case 'Meta':
-          addToShortcut = 'Super'
-          newState.commandIsPressed = true
           break
 
         case 'Control':
@@ -59,15 +68,18 @@ export default class extends Pane {
           newState.controlIsPressed = true
           break
 
+        case 'Escape':
+          shouldCancel = true
+          break
+
+        case 'Meta':
+          addToShortcut = 'Super'
+          newState.commandIsPressed = true
+          break
+
         case 'Shift':
           addToShortcut = 'Shift'
           newState.shiftIsPressed = true
-          break
-
-        case '+':
-          addToShortcut = 'Plus'
-          newState.keyIsPressed = '+'
-          newState.recordingShortcut = false
           break
 
         default:
@@ -78,6 +90,10 @@ export default class extends Pane {
           }
           newState.keyIsPressed = addToShortcut
           newState.recordingShortcut = false
+      }
+
+      if (shouldCancel) {
+        return this._cancelRecording()
       }
 
       if (this.state.recordedShortcut.indexOf(addToShortcut) === -1) {
@@ -101,14 +117,14 @@ export default class extends Pane {
       let removeFromShortcut
 
       switch (event.key) {
+        case '+':
+          removeFromShortcut = 'Plus'
+          newState.keyIsPressed = false
+          break
+
         case 'Alt':
           removeFromShortcut = 'Alt'
           newState.altIsPressed = false
-          break
-
-        case 'Meta':
-          removeFromShortcut = 'Super'
-          newState.commandIsPressed = false
           break
 
         case 'Control':
@@ -116,14 +132,14 @@ export default class extends Pane {
           newState.controlIsPressed = false
           break
 
+        case 'Meta':
+          removeFromShortcut = 'Super'
+          newState.commandIsPressed = false
+          break
+
         case 'Shift':
           removeFromShortcut = 'Shift'
           newState.shiftIsPressed = false
-          break
-
-        case '+':
-          removeFromShortcut = 'Plus'
-          newState.keyIsPressed = false
           break
 
         default:
@@ -222,6 +238,8 @@ export default class extends Pane {
   }
 
   _startRecording () {
+    globalShortcut.unregister(this.state.shortcut)
+
     this.setState({
       altIsPressed: false,
       commandIsPressed: false,
@@ -249,9 +267,14 @@ export default class extends Pane {
       'shortcut',
     ]
 
+    // Diff the settings and only update the config if the setting has actually changed
     settings.forEach(setting => {
       if (this.state[setting] !== nextState[setting]) {
         config.set(setting, nextState[setting])
+
+        if (setting === 'shortcut') {
+          BrowserWindow.getFocusedWindow().emit('shortcut-updated')
+        }
       }
     })
 

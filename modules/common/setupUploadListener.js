@@ -2,7 +2,6 @@ import {
   clipboard,
   globalShortcut
 } from 'electron'
-import Config from 'electron-config'
 import log from 'electron-log'
 import path from 'path'
 
@@ -10,7 +9,7 @@ import path from 'path'
 
 
 
-let config = new Config
+let config = new (require('electron-config'))
 let copyFile = require('./copyFile')
 let createTextFile = require('./createTextFile')
 let generateTempFilepath = require('./generateTempFilepath')
@@ -22,7 +21,7 @@ let zipFiles = require('./zipFiles')
 
 
 module.exports = function () {
-  globalShortcut.register('CommandOrControl+Option+U', () => {
+  globalShortcut.register(config.get('shortcut'), () => {
     let formats = clipboard.availableFormats()
     let clipboardFileContents = clipboard.readBuffer('NSFilenamesPboardType').toString('utf8')
 
