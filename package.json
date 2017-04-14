@@ -53,6 +53,7 @@
       "electronPackagerConfig": {
         "appBundleId": "eidetica",
         "appCategoryType": "public.app-category.productivity",
+        "appCopyright": "Copyright © 2017 Trezy.com",
         "extraResource": "./app/assets",
         "icon": "./app/assets/icon",
         "osxSign": true
