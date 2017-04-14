@@ -70,6 +70,7 @@ new class App {
   initialize () {
     log.info('Initializing app')
 
+    let trayIconFilename = 'tray-iconTemplate.png'
     let trayIconPath
 
     // Set up the default items for all context menus
@@ -92,13 +93,13 @@ new class App {
 
     // Figure out where the tray icon lives
     if (process.env.NODE_ENV === 'development') {
-      trayIconPath = path.resolve(app.getAppPath(), 'assets', 'tray-iconTemplate.png')
+      trayIconPath = path.resolve('app', 'assets', trayIconFilename)
     } else {
-      trayIconPath = path.resolve(process.resourcesPath, 'tray-iconTemplate.png')
+      trayIconPath = path.resolve(process.resourcesPath, trayIconFilename)
     }
 
     // Generate the tray icon as a native image
-    this.trayIcon = nativeImage.createFromPath(path.resolve(trayIconPath))
+    this.trayIcon = nativeImage.createFromPath(trayIconPath)
 
     // setting the tray icon as a template image means macOS will handle changing it from white to black for us
     this.trayIcon.setTemplateImage(true)
