@@ -1,5 +1,6 @@
 input {
   &[type=email],
+  &[type=number],
   &[type=password],
   &[type=text],
   &[type=url] {
