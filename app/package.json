@@ -8,7 +8,7 @@
     "url": "http://trezy.com"
   },
   "version": "1.4.3",
-  "main": "./bootstrap.js",
+  "main": "./main.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:trezy/eidetica.git"

@@ -7,7 +7,7 @@
     "email": "tre@trezy.com",
     "url": "http://trezy.com"
   },
-  "main": "./app/bootstrap.js",
+  "main": "./app/main.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:trezy/eidetica.git"
@@ -18,8 +18,6 @@
     "babel-preset-env": "^1.3.3",
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-react": "^6.24.1",
-    "electron-compile": "^6.3.0",
-    "electron-compilers": "^5.7.0",
     "electron-config": "^0.2.1",
     "electron-forge": "^2.9.0",
     "electron-log": "^2.0.0",
@@ -33,22 +31,8 @@
     "dev": "NODE_ENV='development' yarn run start",
     "start": "electron-forge start",
     "package": "electron-forge package",
+    "postinstall": "cd app && yarn install",
     "make": "electron-forge make"
-  },
-  "build": {
-    "appId": "eidetica",
-    "extraResources": [
-      {
-        "from": "assets",
-        "to": "",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
-    "publish": [
-      "github"
-    ]
   },
   "config": {
     "forge": {
@@ -64,7 +48,13 @@
           "rpm"
         ]
       },
-      "electronPackagerConfig": {},
+      "electronPackagerConfig": {
+        "appBundleId": "eidetica",
+        "appCategoryType": "public.app-category.productivity",
+        "extraResource": "./app/assets",
+        "icon": "./app/assets/icon",
+        "osxSign": true
+      },
       "electronWinstallerConfig": {
         "name": ""
       },
