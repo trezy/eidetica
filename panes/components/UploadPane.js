@@ -42,11 +42,11 @@ export default class extends Pane {
   \***************************************************************************/
 
   componentWillUpdate (nextProps, nextState) {
-    for (let setting of nextState) {
+    Object.keys(nextState).forEach(setting => {
       if (nextState[setting] !== this.state[setting]) {
         config.set(setting, nextState[setting])
       }
-    }
+    })
   }
 
   constructor (props) {
