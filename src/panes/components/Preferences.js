@@ -97,6 +97,6 @@ export default class extends React.Component {
     let height = document.querySelector('#root').clientHeight
     let width = app.pane.getSize()[0]
 
-//    app.pane.setSize(width, height, true)
+    app.pane.setSize(width, height, true)
   }
 }

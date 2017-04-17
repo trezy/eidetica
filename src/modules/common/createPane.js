@@ -27,7 +27,7 @@ module.exports = function () {
     width: 500,
   })
 
-  pane.openDevTools()
+//  pane.openDevTools()
 
   pane.loadPane = function (pane) {
     this.loadURL(url.format({
