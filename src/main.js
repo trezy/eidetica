@@ -93,9 +93,9 @@ new class App {
 
     // Figure out where the tray icon lives
     if (process.env.NODE_ENV === 'development') {
-      trayIconPath = path.resolve('app', 'assets', trayIconFilename)
+      trayIconPath = path.resolve(__dirname, 'assets', trayIconFilename)
     } else {
-      trayIconPath = path.resolve(process.resourcesPath, trayIconFilename)
+      trayIconPath = path.resolve(process.resourcesPath, 'app', 'src', 'assets', trayIconFilename)
     }
 
     // Generate the tray icon as a native image
