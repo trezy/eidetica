@@ -38,8 +38,10 @@
   },
   "scripts": {
     "dev": "NODE_ENV='development' yarn run start",
+    "dist": "yarn run package && yarn run publish",
     "start": "electron-forge start",
     "package": "electron-forge package",
+    "publish": "electron-forge publish",
     "make": "electron-forge make"
   },
   "config": {
@@ -56,6 +58,17 @@
           "rpm"
         ]
       },
+      "publish_targets": {
+        "win32": [
+          "github"
+        ],
+        "darwin": [
+          "github"
+        ],
+        "linux": [
+          "github"
+        ]
+      },
       "electronPackagerConfig": {
         "appBundleId": "eidetica",
         "appCategoryType": "public.app-category.productivity",
@@ -70,8 +83,8 @@
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
       "github_repository": {
-        "owner": "",
-        "name": ""
+        "owner": "trezy",
+        "name": "eidetica"
       },
       "windowsStoreConfig": {
         "packageName": ""
