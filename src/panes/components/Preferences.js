@@ -13,7 +13,6 @@ import {
 
 
 import AboutPane from './AboutPane'
-import AdvancedPane from './AdvancedPane'
 import GeneralPane from './GeneralPane'
 import UploadPane from './UploadPane'
 
@@ -73,7 +72,6 @@ export default class extends React.Component {
         <SegmentedControl box>
           {this.renderItem('General', <GeneralPane />)}
           {this.renderItem('Uploads', <UploadPane />)}
-          {this.renderItem('Advanced', <AdvancedPane />)}
           {this.renderItem('About', <AboutPane />)}
         </SegmentedControl>
       </Window>
