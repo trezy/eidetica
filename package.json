@@ -38,7 +38,6 @@
   },
   "scripts": {
     "dev": "NODE_ENV='development' yarn run start",
-    "dist": "yarn run package && yarn run publish",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "publish": "electron-forge publish",
