@@ -3,6 +3,6 @@ node_js:
   - "7"
 os: osx
 script:
-  - yarn run dist
+  - yarn run publish
 cache:
   yarn: true

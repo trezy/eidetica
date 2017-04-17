@@ -1,0 +1,16 @@
+input {
+  &[type=email],
+  &[type=number],
+  &[type=password],
+  &[type=text],
+  &[type=url] {
+    border-color: #bebfbf;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: #f0f0f0 0px 0px 0px 1px inset;
+    line-height: 15px;
+    margin: 0;
+    padding: 4px 3.5px 3px;
+    width: 100%;
+  }
+}

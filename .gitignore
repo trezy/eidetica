@@ -1,4 +1,5 @@
 ### Project ###
+out/
 dist/
 config.json
 

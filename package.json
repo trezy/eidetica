@@ -5,10 +5,10 @@
   "author": {
     "name": "Trezy",
     "email": "tre@trezy.com",
-    "url": "trezy.com"
+    "url": "http://trezy.com"
   },
-  "version": "1.4.2",
-  "main": "main.js",
+  "version": "2.0.0",
+  "main": "./src/main.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:trezy/eidetica.git"
@@ -16,38 +16,79 @@
   "license": "MIT",
   "dependencies": {
     "archiver": "^1.3.0",
+    "electron-compile": "^6.3.0",
     "electron-config": "^0.2.1",
     "electron-log": "^2.0.0",
-    "electron-main-notification": "^1.0.1",
     "electron-updater": "^1.11.1",
+    "electron-main-notification": "^1.0.1",
+    "react": "^15.4.2",
+    "react-desktop": "^0.2.19",
+    "react-dom": "^15.4.2",
     "scp2": "^0.5.0",
     "shorthash": "^0.0.2",
     "sshpk": "^1.11.0"
   },
   "devDependencies": {
-    "electron": "1.6.4",
-    "electron-builder": "^16.6.1"
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.3.3",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.24.1",
+    "electron-forge": "^2.9.0",
+    "electron-prebuilt-compile": "1.6.5"
   },
   "scripts": {
-    "dev": "NODE_ENV='development' npm run start",
-    "dist": "build",
-    "pack": "build --dir",
-    "postinstall": "install-app-deps",
-    "start": "electron . --enable-logging"
+    "dev": "NODE_ENV='development' yarn run start",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "publish": "electron-forge publish",
+    "make": "electron-forge make"
   },
-  "build": {
-    "appId": "eidetica",
-    "extraResources": [
-      {
-        "from": "assets",
-        "to": "",
-        "filter": [
-          "**/*"
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "dmg",
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
         ]
+      },
+      "publish_targets": {
+        "win32": [
+          "github"
+        ],
+        "darwin": [
+          "github"
+        ],
+        "linux": [
+          "github"
+        ]
+      },
+      "electronPackagerConfig": {
+        "appBundleId": "eidetica",
+        "appCategoryType": "public.app-category.productivity",
+        "appCopyright": "Copyright © 2017 Trezy.com",
+        "dir": "./src",
+        "icon": "./src/assets/icon",
+        "osxSign": true
+      },
+      "electronWinstallerConfig": {
+        "name": ""
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "trezy",
+        "name": "eidetica"
+      },
+      "windowsStoreConfig": {
+        "packageName": ""
       }
-    ],
-    "publish": [
-      "github"
-    ]
+    }
   }
 }
