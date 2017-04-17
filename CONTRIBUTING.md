@@ -4,7 +4,7 @@ You want to contribute to the project? Awesome!
 
 ### Things to know
 
-This project adheres to the Contributor Covenant [code of conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to atom@github.com.
+This project adheres to the Contributor Covenant [code of conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [tre@trezy.com](mailto:tre@trezy.com).
 
 ### How do
 
