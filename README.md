@@ -12,13 +12,14 @@ Eidetica is a screenshot sharing application. When you take a screenshot, Eideti
 
 ## Using Eidetica
 
-### Quick Start
-
 1. **Download and install the [latest version](//github.com/trezy/eidetica/releases/latest).**
 1. **Run it.** You may get a warning saying that the app is from an untrusted source. That's because I don't have an official Apple cert yet. Once I have the money, I'll fix this one.
 1. **Enter your server settings.** Check out the [wiki page](https://github.com/trezy/eidetica/wiki/Settings) if you're having trouble with your settings.
 1. **Take a screenshot!** After a moment, you should receive a notification informing you that your screenshot has been uploaded to the server and a link to it has been placed in your clipboard.
 
+Want to learn more? [Check out the wiki!](https://github.com/trezy/eidetica/wiki/What-can-I-do-with-Eidetica%3F)
+
 ## Contributing
 
 Check out [CONTRIBUTING.md](CONTRIBUTING.md)
+
