@@ -27,7 +27,6 @@
     "electron-compile": "6.4.2",
     "electron-config": "1.0.0",
     "electron-log": "2.2.15",
-    "electron-main-notification": "1.0.1",
     "electron-squirrel-startup": "1.0.0",
     "electron-updater": "2.21.10",
     "html-entities": "^1.2.1",
