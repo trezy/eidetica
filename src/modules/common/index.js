@@ -1,24 +1,14 @@
-import { readdirSync } from 'fs'
-import { extname } from 'path'
-
-
-
-
-
-const exports = {}
-const modules = readdirSync(__dirname)
-
-for (const module of modules) {
-  const extension = extname(module)
-
-  if (extension === '.js') {
-    // eslint-disable-next-line global-require,import/no-dynamic-require
-    exports[module.replace(extension, '')] = require(`./${module}`)
-  }
-}
-
-
-
-
-
-export default exports
+export * from './copyFile'
+export * from './createPane'
+export * from './createTextFile'
+export * from './generateShortlink'
+export * from './generateTempFilepath'
+export * from './getPrivateKeys'
+export * from './getSCPConfig'
+export * from './handleScreenshot'
+export * from './isDirectory'
+export * from './setupApplicationMenu'
+export * from './setupAutoUpdater'
+export * from './setupUploadListener'
+export * from './uploadFile'
+export * from './zipFiles'

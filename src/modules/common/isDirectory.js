@@ -17,4 +17,4 @@ const isDirectory = (path) => {
 
 
 
-export default isDirectory
+export { isDirectory }

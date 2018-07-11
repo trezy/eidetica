@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { app } from 'electron'
 import Config from 'electron-config'
 import fs from 'fs'
@@ -8,27 +9,27 @@ import path from 'path'
 
 
 
-import copyFile from './copyFile'
-import generateShortlink from './generateShortlink'
-import generateTempFilepath from './generateTempFilepath'
-import uploadFile from './uploadFile'
+import {
+  copyFile,
+  generateTempFilepath,
+  uploadFile,
+} from '.'
 
 
 
 
 
-let config = new Config
+const config = new Config
 
 
 
 
 
-module.exports = function (filename) {
+const handleScreenshot = async filename => {
   log.info('Handling screenshot')
 
-  let filepath = path.resolve(app.getPath('desktop'), filename)
-  let tempFilepath = generateTempFilepath(path.extname(filename), filename)
-  let shortlink = generateShortlink(path.basename(tempFilepath))
+  const filepath = path.resolve(app.getPath('desktop'), filename)
+  const tempFilepath = generateTempFilepath(path.extname(filename), filename)
 
   try {
     fs.readFileSync(filepath)
@@ -37,13 +38,15 @@ module.exports = function (filename) {
     return
   }
 
-  log.info(`A screenshot was captured at ${filename.replace('Screen Shot ', '').replace('.png', '')}`)
+  await uploadFile(await copyFile(filepath, tempFilepath))
 
-  copyFile(filepath, tempFilepath)
-  .then(uploadFile)
-  .then(() => {
-    if (config.get('deleteAfterUpload')) {
-      fs.unlinkSync(filepath)
-    }
-  })
+  if (config.get('deleteAfterUpload')) {
+    fs.unlinkSync(filepath)
+  }
 }
+
+
+
+
+
+export { handleScreenshot }

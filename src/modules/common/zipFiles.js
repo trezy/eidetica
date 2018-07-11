@@ -7,52 +7,53 @@ import path from 'path'
 
 
 
-import generateTempFilepath from './generateTempFilepath'
+import {
+  generateTempFilepath,
+  isDirectory,
+} from '.'
 
 
 
 
 
-module.exports = function (files) {
-  return new Promise((resolve, reject) => {
-    log.info('Zipping files:', files.join(', '))
+const zipFiles = files => new Promise((resolve, reject) => {
+  log.info('Zipping files:', files.join(', '))
 
-    let archive = archiver('zip', {
-      store: true
-    })
-    let filepath = generateTempFilepath('zip')
-    let output = fs.createWriteStream(filepath)
+  const archive = archiver('zip', { store: true })
+  const filepath = generateTempFilepath('zip')
+  const output = fs.createWriteStream(filepath)
 
-    output.on('close', () => {
-      resolve(filepath)
-
-      log.info('Finished archiving files.')
-    })
-
-    archive.on('error', error => {
-      reject(error)
-    })
-
-    archive.pipe(output)
-
-    files.forEach(file => {
-      let isDir = false
-
-      try {
-        fs.readdirSync(file)
-        isDir = true
-      } catch (error) {}
-
-      if (isDir) {
-        archive.directory(file, path.basename(file))
-
-      } else {
-        archive.file(file, {
-          name: path.basename(file)
-        })
-      }
-    })
-
-    archive.finalize()
+  output.on('close', () => {
+    log.info('Finished archiving files.')
+    resolve(filepath)
   })
-}
+
+  archive.on('warning', warning => {
+    log.warn(warning)
+  })
+
+  archive.on('error', error => {
+    log.error(error)
+    reject(error)
+  })
+
+  archive.pipe(output)
+
+  files.forEach(file => {
+    const fileBasename = path.basename(file)
+
+    if (isDirectory(isDirectory)) {
+      archive.directory(file, fileBasename)
+    } else {
+      archive.file(file, { name: fileBasename })
+    }
+  })
+
+  archive.finalize()
+})
+
+
+
+
+
+export { zipFiles }

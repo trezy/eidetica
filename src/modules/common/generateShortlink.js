@@ -4,12 +4,10 @@ import Config from 'electron-config'
 
 
 
-let config = new Config
+const generateShortlink = filename => `${new Config().get('url')}/${filename}`
 
 
 
 
 
-module.exports = function (filename) {
-  return `${config.get('url')}/${filename}`
-}
+export { generateShortlink }

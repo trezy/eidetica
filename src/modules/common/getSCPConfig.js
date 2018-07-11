@@ -1,23 +1,24 @@
-import Config from 'electron-config'
+import ElectronConfig from 'electron-config'
 
 
 
 
 
-let config = new Config
+const config = new ElectronConfig
 
 
 
 
 
-module.exports = function () {
-  let ret = {
+const getSCPConfig = () => {
+  const ret = {
     host: config.get('host'),
+    path: config.get('path'),
     port: config.get('port') || 22,
     username: config.get('username'),
-    path: config.get('path'),
   }
-  let password = config.get('password')
+
+  const password = config.get('password')
 
   if (password) {
     ret.password = password
@@ -25,3 +26,9 @@ module.exports = function () {
 
   return ret
 }
+
+
+
+
+
+export { getSCPConfig }

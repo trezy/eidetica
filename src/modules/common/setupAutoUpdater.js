@@ -1,5 +1,8 @@
+// Module imports
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { app } from 'electron'
 import { autoUpdater } from 'electron-updater'
+import ElectronConfig from 'electron-config'
 import log from 'electron-log'
 import notify from 'electron-main-notification'
 
@@ -7,13 +10,13 @@ import notify from 'electron-main-notification'
 
 
 
-let config = new (require('electron-config'))
+const config = new ElectronConfig
 
 
 
 
 
-module.exports = function () {
+const setupAutoUpdater = () => {
   // Setup autoupdater
   if (process.env.NODE_ENV !== 'development') {
     autoUpdater.logger = log
@@ -21,13 +24,13 @@ module.exports = function () {
 
     autoUpdater.on('update-available', () => {
       notify('Update available', {
-        body: `We're downloading the update now and will restart when we're finished.`
+        body: 'We\'re downloading the update now and will restart when we\'re finished.',
       })
     })
 
     autoUpdater.on('update-downloaded', () => {
       notify('Restarting', {
-        body: `We're restarting ${app.getName()} so you can have all the nifty new features. 😉`
+        body: `We're restarting ${app.getName()} so you can have all the nifty new features. 😉`,
       })
 
       autoUpdater.quitAndInstall()
@@ -48,3 +51,9 @@ module.exports = function () {
     )
   }
 }
+
+
+
+
+
+export { setupAutoUpdater }

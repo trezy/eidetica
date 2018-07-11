@@ -1,8 +1,5 @@
-import {
-  app,
-  BrowserWindow
-} from 'electron'
-import log from 'electron-log'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { BrowserWindow } from 'electron'
 import path from 'path'
 import url from 'url'
 
@@ -10,14 +7,14 @@ import url from 'url'
 
 
 
-import setupUploadListener from './setupUploadListener'
+import { setupUploadListener } from '.'
 
 
 
 
 
-module.exports = function () {
-  let pane = new BrowserWindow({
+const createPane = () => {
+  const pane = new BrowserWindow({
     frame: false,
     height: 500,
     resizable: false,
@@ -27,11 +24,9 @@ module.exports = function () {
     width: 500,
   })
 
-//  pane.openDevTools()
-
-  pane.loadPane = function (pane) {
-    this.loadURL(url.format({
-      pathname: path.join(__dirname, '..', '..', 'panes', `${pane}.html`),
+  pane.loadPane = (paneName) => {
+    pane.loadURL(url.format({
+      pathname: path.resolve(__dirname, 'panes', `${paneName}.html`),
       protocol: 'file',
       slashes: true,
     }))
@@ -44,3 +39,9 @@ module.exports = function () {
 
   return pane
 }
+
+
+
+
+
+export { createPane }

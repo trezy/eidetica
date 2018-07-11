@@ -14,11 +14,13 @@ import path from 'path'
 import sharp from 'sharp'
 
 // Component imports
-import createPane from './modules/common/createPane'
-import handleScreenshot from './modules/common/handleScreenshot'
-import setupApplicationMenu from './modules/common/setupApplicationMenu'
-import setupAutoUpdater from './modules/common/setupAutoUpdater'
-import setupUploadListener from './modules/common/setupUploadListener'
+import {
+  createPane,
+  handleScreenshot,
+  setupApplicationMenu,
+  setupAutoUpdater,
+  setupUploadListener,
+} from './modules/common'
 
 
 
