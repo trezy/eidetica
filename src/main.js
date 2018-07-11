@@ -53,6 +53,8 @@ new class App {
 
   fillPad = 4
 
+  screenshotQueue = new Set([])
+
   size = 45
 
 
@@ -113,7 +115,8 @@ new class App {
   startScreenshotListener = () => {
     // MacOS
     fs.watch(this.screenshotFolder, (type, filename) => {
-      if (filename.indexOf('Screen Shot') === 0) {
+      if (/^Screen Shot.*\.png$/gi.exec(filename) && !this.screenshotQueue.has(filename)) {
+        this.screenshotQueue.add(filename)
         handleScreenshot(filename)
       }
     })
