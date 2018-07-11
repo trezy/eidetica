@@ -230,20 +230,6 @@ new class App {
     return iconAsNativeImage
   }
 
-  static getAssetAsNativeImage (filename) {
-    return nativeImage.createFromPath(path.resolve(App.assetPath, filename))
-  }
-
-  static getIconStateAsNativeImage (state) {
-    const iconAsNativeImage = App.getAssetAsNativeImage(path.resolve('icon-states', `icon${state}Template.png`))
-
-    iconAsNativeImage.setTemplateImage(true)
-
-    log.info('image:', iconAsNativeImage)
-
-    return iconAsNativeImage
-  }
-
 
 
 

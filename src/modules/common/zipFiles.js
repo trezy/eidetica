@@ -1,9 +1,7 @@
-import { app } from 'electron'
 import archiver from 'archiver'
 import fs from 'fs'
 import log from 'electron-log'
 import path from 'path'
-import shorthash from 'shorthash'
 
 
 

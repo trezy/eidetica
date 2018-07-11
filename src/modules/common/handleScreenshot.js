@@ -3,7 +3,6 @@ import Config from 'electron-config'
 import fs from 'fs'
 import log from 'electron-log'
 import path from 'path'
-import shorthash from 'shorthash'
 
 
 
