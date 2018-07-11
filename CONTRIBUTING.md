@@ -32,12 +32,14 @@ I recommend using [Yarn](https://yarnpkg.com/en/) since I try to keep the `yarn.
   git clone git@github.com:trezy/eidetica.git
   cd eidetica
   ```
+
 1. Install dependencies
   ```shell
   yarn install
   # or
   npm install
   ```
+
 1. Run the app
   ```shell
   yarn run dev

@@ -66,8 +66,7 @@ export default class extends React.Component {
           onCloseClick={this.handleClose}
           onMinimizeClick={this.handleMinimize}
           onResizeClick={this.handleResize}
-          title="Eidetica Settings"
-          />
+          title="Eidetica Settings" />
 
         <SegmentedControl box>
           {this.renderItem('General', <GeneralPane />)}
