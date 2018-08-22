@@ -17,17 +17,11 @@ import sharp from 'sharp'
 import {
   createPane,
   handleScreenshot,
+  isDevelopmentMode,
   setupApplicationMenu,
   setupAutoUpdater,
   setupUploadListener,
 } from './modules/common'
-
-
-
-
-
-// Setup development mode
-const isDevelopmentMode = process.env.NODE_ENV === 'development'
 
 
 
@@ -76,11 +70,10 @@ new class App {
     // Get the screenshot folder
     this.screenshotFolder = app.getPath('desktop')
 
-    // Track whether or not we should exit or just hide the preferences pane
-    this.shouldQuitApp = false
-
-    // Prevent the dock icon from being displayed
-    // app.dock.hide()
+    // Prevent the dock icon from being displayed in production
+    if (!isDevelopmentMode()) {
+      app.dock.hide()
+    }
 
     // Preload the pane in a hidden browser window
     this.pane = createPane()
@@ -244,7 +237,7 @@ new class App {
   \***************************************************************************/
 
   static get assetPath () {
-    if (isDevelopmentMode) {
+    if (isDevelopmentMode()) {
       return path.resolve(__dirname, 'assets')
     }
 
