@@ -1,0 +1,23 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: $darkest-grey;
+  color: $white;
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: 200;
+}
+
+[data-reactroot] {
+  display: grid;
+  grid-template-areas: 'banner main';
+  grid-template-columns: 20rem auto;
+  // height: auto !important;
+}

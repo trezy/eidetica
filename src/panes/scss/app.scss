@@ -1,7 +1,19 @@
-@import './atoms/_root';
+/*****************************************************************************\
+  Core
+\*****************************************************************************/
 
-@import './atoms/_input';
-@import './atoms/_kbd';
-@import './atoms/_table';
+@import './core/root';
 
-@import './molecules/_kbd-container';
+@import './core/input';
+@import './core/kbd';
+@import './core/table';
+
+
+
+
+
+/*****************************************************************************\
+Components
+\*****************************************************************************/
+
+@import './components/kbd-container';
