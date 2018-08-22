@@ -17,6 +17,7 @@
     "dev": "NODE_ENV='development' yarn run start",
     "start": "electron-forge start",
     "package": "electron-forge package",
+    "postinstall": "electron-rebuild",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint src --color"
@@ -53,6 +54,12 @@
     "eslint-plugin-import": "2",
     "eslint-plugin-jsx-a11y": "6",
     "eslint-plugin-react": "7"
+  },
+  "build": {
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/sharp/**/*"
+    ]
   },
   "config": {
     "forge": {
