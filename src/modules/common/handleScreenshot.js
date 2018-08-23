@@ -38,7 +38,8 @@ const handleScreenshot = async filename => {
     return
   }
 
-  await uploadFile(await copyFile(filepath, tempFilepath))
+  await copyFile(filepath, tempFilepath)
+  await uploadFile(tempFilepath)
 
   if (config.get('deleteAfterUpload')) {
     fs.unlinkSync(filepath)
