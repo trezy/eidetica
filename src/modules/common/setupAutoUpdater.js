@@ -1,34 +1,47 @@
-import { app } from 'electron'
+// Module imports
+/* eslint-disable import/no-extraneous-dependencies */
+import {
+  app,
+  Notification,
+} from 'electron'
+/* eslint-enable */
 import { autoUpdater } from 'electron-updater'
+import ElectronConfig from 'electron-config'
 import log from 'electron-log'
-import notify from 'electron-main-notification'
 
 
 
 
 
-let config = new (require('electron-config'))
+const config = new ElectronConfig
 
 
 
 
 
-module.exports = function () {
+const setupAutoUpdater = () => {
   // Setup autoupdater
   if (process.env.NODE_ENV !== 'development') {
     autoUpdater.logger = log
     autoUpdater.logger.transports.file.level = 'info'
 
+    const updateAvailableNotification = new Notification({
+      body: 'We\'re downloading the update now and will restart when we\'re finished.',
+      title: 'Update available',
+    })
+
+    const updateDownloadedNotification = new Notification({
+      body: `We're restarting ${app.getName()} so you can have all the nifty new features. 😉`,
+      title: 'Restarting',
+    })
+
     autoUpdater.on('update-available', () => {
-      notify('Update available', {
-        body: `We're downloading the update now and will restart when we're finished.`
-      })
+      updateAvailableNotification.show()
     })
 
     autoUpdater.on('update-downloaded', () => {
-      notify('Restarting', {
-        body: `We're restarting ${app.getName()} so you can have all the nifty new features. 😉`
-      })
+      updateAvailableNotification.close()
+      updateDownloadedNotification.show()
 
       autoUpdater.quitAndInstall()
     })
@@ -48,3 +61,9 @@ module.exports = function () {
     )
   }
 }
+
+
+
+
+
+export { setupAutoUpdater }

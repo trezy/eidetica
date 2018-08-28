@@ -1,8 +1,12 @@
+/* eslint-disable import/no-extraneous-dependencies */
+// Module imports
 import {
   clipboard,
-  globalShortcut
+  globalShortcut,
 } from 'electron'
-import fs from 'fs'
+/* eslint-enable */
+import Entities from 'html-entities'
+import ElectronConfig from 'electron-config'
 import log from 'electron-log'
 import path from 'path'
 
@@ -10,54 +14,84 @@ import path from 'path'
 
 
 
-let config = new (require('electron-config'))
-let copyFile = require('./copyFile')
-let createTextFile = require('./createTextFile')
-let generateTempFilepath = require('./generateTempFilepath')
-let uploadFile = require('./uploadFile')
-let zipFiles = require('./zipFiles')
+// Component imports
+import {
+  copyFile,
+  createTextFile,
+  generateTempFilepath,
+  isDirectory,
+  uploadFile,
+  zipFiles,
+} from '.'
 
 
 
 
 
-module.exports = function () {
-  globalShortcut.register(config.get('shortcut'), () => {
-    let formats = clipboard.availableFormats()
-    let clipboardFileContents = clipboard.readBuffer('NSFilenamesPboardType').toString('utf8')
+// Component constants
+const config = new ElectronConfig
+const entities = new Entities.XmlEntities()
+
+
+
+
+
+const setupUploadListener = () => {
+  globalShortcut.register(config.get('shortcut'), async () => {
+    const clipboardFileContents = clipboard.readBuffer('NSFilenamesPboardType').toString('utf8')
+
+    const pasteboardTypes = [
+      'NSFileContentsPboardType',
+      'NSFilenamesPasteboardType',
+      'NSFilenamesPboardType',
+      'NSPasteboardTypeColor',
+      'NSPasteboardTypeFileURL',
+      'NSPasteboardTypeFont',
+      'NSPasteboardTypeHTML',
+      'NSPasteboardTypeMultipleTextSelection',
+      'NSPasteboardTypePDF',
+      'NSPasteboardTypePNG',
+      'NSPasteboardTypeRTF',
+      'NSPasteboardTypeRTFD',
+      'NSPasteboardTypeRuler',
+      'NSPasteboardTypeSound',
+      'NSPasteboardTypeString',
+      'NSPasteboardTypeTabularText',
+      'NSPasteboardTypeTextFinderOptions',
+      'NSPasteboardTypeTIFF',
+      'NSPasteboardTypeURL',
+    ]
 
     if (clipboardFileContents) {
-      let matches = clipboardFileContents.match(/<string>.*<\/string>/gi)
-      let files = matches.map(string => string.replace(/<\/*string>/gi, ''))
-      let promise
+      const matches = clipboardFileContents.match(/<string>.*<\/string>/gi)
+      const files = matches.map(string => entities.decode(string.replace(/<\/*string>/gi, '')))
+      let fileToUpload = null
 
-      if (files.length > 1) {
-        promise = zipFiles(files)
-
-      } else {
-        let isDir = false
-
+      if ((files.length > 1) || isDirectory(files[0])) {
         try {
-          fs.readdirSync(files[0])
-          isDir = true
-        } catch (error) {}
-
-        if (isDir) {
-          promise = zipFiles(files)
-        } else {
-          promise = copyFile(files[0], generateTempFilepath(path.extname(files[0]), files[0]))
+          fileToUpload = await zipFiles(files)
+        } catch (error) {
+          log.info(error)
         }
+      } else {
+        fileToUpload = await copyFile(files[0], generateTempFilepath(path.extname(files[0]), files[0]))
       }
 
-      promise
-      .then(uploadFile)
-      .catch(error => {
+      try {
+        uploadFile(fileToUpload)
+      } catch (error) {
         log.error(error)
-      })
-
+      }
     } else {
-      createTextFile(clipboard.readText())
-      .then(uploadFile)
+      const file = await createTextFile(clipboard.readText())
+
+      uploadFile(file)
     }
   })
 }
+
+
+
+
+
+export { setupUploadListener }

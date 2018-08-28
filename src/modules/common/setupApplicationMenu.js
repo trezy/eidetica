@@ -1,10 +1,12 @@
+// Module imports
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Menu } from 'electron'
 
 
 
 
 
-module.exports = function () {
+const setupApplicationMenu = () => {
   Menu.setApplicationMenu(Menu.buildFromTemplate([{
     label: 'Edit',
     submenu: [
@@ -20,3 +22,9 @@ module.exports = function () {
     ]
   }]))
 }
+
+
+
+
+
+export { setupApplicationMenu }

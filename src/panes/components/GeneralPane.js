@@ -1,54 +1,79 @@
-let {
-  app,
-  BrowserWindow,
-  globalShortcut
-} = require('electron').remote
-import {
-  Checkbox,
-  Label,
-  Link,
-  TextInput
-} from 'react-desktop/macOs'
+import Config from 'electron-config'
 import React from 'react'
 
 
 
 
 
+import KBDContainer from './KBDContainer'
 import Pane from './Pane'
+import Switch from './Switch'
 
 
 
 
 
-let config = new (require('electron-config'))
+/* eslint-disable import/no-extraneous-dependencies */
+const {
+  app,
+  BrowserWindow,
+  globalShortcut,
+} = require('electron').remote
+/* eslint-enable */
+const config = new Config
 
 
 
 
 
-export default class extends Pane {
+class GeneralPane extends Pane {
+  /***************************************************************************\
+    Private methods
+  \***************************************************************************/
+
+  state = {
+    altIsPressed: false,
+    commandIsPressed: false,
+    controlIsPressed: false,
+    keyIsPressed: false,
+    recordedShortcut: [],
+    recordingShortcut: false,
+    shiftIsPressed: false,
+
+    autoUpdate: config.get('autoUpdate'),
+    deleteAfterUpload: config.get('deleteAfterUpload'),
+    filenameHandling: config.get('filenameHandling'),
+    launchAtLogin: app.getLoginItemSettings().openAtLogin,
+    shortcut: config.get('shortcut'),
+  }
+
+
+
+
 
   /***************************************************************************\
     Private methods
   \***************************************************************************/
 
-  _cancelRecording () {
-    this.setState({
-      recordingShortcut: false,
-    })
+  _cancelRecording = () => {
+    this.setState({ recordingShortcut: false })
 
     BrowserWindow.getFocusedWindow().emit('shortcut-reset')
   }
 
-  _handleKeydown (event) {
-    if (this.state.recordingShortcut) {
-      let addToShortcut
-      let key
-      let newState = {
-        recordedShortcut: this.state.recordedShortcut.slice(0),
-        recordingShortcut: true
+  _handleKeydown = event => {
+    const {
+      recordedShortcut,
+      recordingShortcut,
+    } = this.state
+
+    if (recordingShortcut) {
+      const newState = {
+        recordedShortcut: recordedShortcut.slice(0),
+        recordingShortcut: true,
       }
+
+      let addToShortcut
       let shouldCancel = false
 
       switch (event.key) {
@@ -96,24 +121,25 @@ export default class extends Pane {
         return this._cancelRecording()
       }
 
-      if (this.state.recordedShortcut.indexOf(addToShortcut) === -1) {
+      if (recordedShortcut.indexOf(addToShortcut) === -1) {
         newState.recordedShortcut.push(addToShortcut)
 
         if (!newState.recordingShortcut) {
-          newState.shortcut = newState.recordedShortcut.join('+')
+          this._updateShortcut(newState.recordedShortcut.join('+'))
         }
 
         this.setState(newState)
       }
     }
+
+    return false
   }
 
-  _handleKeyup (event) {
+  _handleKeyup = event => {
+    const { recordedShortcut } = this.state
+
     if (this.state.recordingShortcut) {
-      let key
-      let newState = {
-        recordedShortcut: this.state.recordedShortcut.slice(0)
-      }
+      const newState = { recordedShortcut: recordedShortcut.slice(0) }
       let removeFromShortcut
 
       switch (event.key) {
@@ -153,91 +179,7 @@ export default class extends Pane {
     }
   }
 
-  _renderKey (key) {
-    switch (key.toLowerCase()) {
-      case 'alt':
-      case 'option':
-        key = `⌥ Opt`
-        break
-
-      case 'backspace':
-      case 'delete':
-        key = `⌫ Del`
-        break
-
-      case 'command':
-      case 'meta':
-      case 'super':
-        key = `⌘ Cmd`
-        break
-
-      case 'control':
-        key = `Ctrl`
-        break
-
-      case 'enter':
-      case 'return':
-        key = `⏎ ${key}`
-
-      case 'shift':
-        key = `⇧ ${key}`
-        break
-
-      case 'plus':
-        key = `+`
-        break
-
-      default:
-        key = key.toUpperCase()
-    }
-
-    return key
-  }
-
-  _renderKeys (keys) {
-    keys = this._reorderKeys(keys)
-
-    return keys.map(key => {
-      key = this._renderKey(key)
-
-      return (
-        <kbd key={key}>{key}</kbd>
-      )
-    })
-  }
-
-  _reorderKeys (keys) {
-    let reorderedKeys = []
-
-    // Clone the array so we're not affecting the original array that's stored in the state
-    keys = keys.slice(0)
-
-    let superIndex = keys.indexOf('Super')
-    if (superIndex !== -1) {
-      reorderedKeys.push(keys.splice(superIndex, 1)[0])
-    }
-
-    let altIndex = keys.indexOf('Alt')
-    if (altIndex !== -1) {
-      reorderedKeys.push(keys.splice(altIndex, 1)[0])
-    }
-
-    let controlIndex = keys.indexOf('Control')
-    if (controlIndex !== -1) {
-      reorderedKeys.push(keys.splice(controlIndex, 1)[0])
-    }
-
-    let shiftIndex = keys.indexOf('Shift')
-    if (shiftIndex !== -1) {
-      reorderedKeys.push(keys.splice(shiftIndex, 1)[0])
-    }
-
-    reorderedKeys = reorderedKeys.concat(keys)
-
-    return reorderedKeys
-  }
-
-  _startRecording () {
+  _startRecording = () => {
     globalShortcut.unregister(this.state.shortcut)
 
     this.setState({
@@ -251,6 +193,22 @@ export default class extends Pane {
     })
   }
 
+  _toggleLaunchAtLogin = ({ target: { checked: shouldLaunchAtLogin } }) => {
+    this.setState({ launchAtLogin: shouldLaunchAtLogin })
+    app.setLoginItemSettings({ openAtLogin: shouldLaunchAtLogin })
+  }
+
+  _updateSetting (setting, value) {
+    this.setState({ [setting]: value })
+    config.set(setting, value)
+  }
+
+  _updateShortcut (shortcut) {
+    this.setState({ shortcut })
+    config.set('shortcut', shortcut)
+    BrowserWindow.getFocusedWindow().emit('shortcut-updated')
+  }
+
 
 
 
@@ -259,177 +217,107 @@ export default class extends Pane {
     Public methods
   \***************************************************************************/
 
-  componentWillUpdate (nextProps, nextState) {
-    let settings = [
-      'autoUpdate',
-      'deleteAfterUpload',
-      'filenameHandling',
-      'launchAtLogin',
-      'shortcut',
-    ]
-
-    // Diff the settings and only update the config if the setting has actually changed
-    settings.forEach(setting => {
-      if (this.state[setting] !== nextState[setting]) {
-        config.set(setting, nextState[setting])
-
-        if (setting === 'shortcut') {
-          BrowserWindow.getFocusedWindow().emit('shortcut-updated')
-        }
-      }
-    })
-
-    if (this.state.launchAtLogin !== nextState.launchAtLogin) {
-      app.setLoginItemSettings({
-        openAtLogin: nextState.launchAtLogin
-      })
-    }
-  }
-
   constructor (props) {
     super(props)
 
-    this._handleKeydown = this._handleKeydown.bind(this)
-    this._handleKeyup = this._handleKeyup.bind(this)
-
     window.addEventListener('keydown', this._handleKeydown)
     window.addEventListener('keyup', this._handleKeyup)
-
-    this.state = {
-      altIsPressed: false,
-      commandIsPressed: false,
-      controlIsPressed: false,
-      keyIsPressed: false,
-      recordedShortcut: [],
-      recordingShortcut: false,
-      shiftIsPressed: false,
-
-      autoUpdate: config.get('autoUpdate'),
-      deleteAfterUpload: config.get('deleteAfterUpload'),
-      filenameHandling: config.get('filenameHandling'),
-      launchAtLogin: app.getLoginItemSettings().openAtLogin,
-      shortcut: config.get('shortcut'),
-    }
   }
 
   render () {
-    let shortcutFooter
-    let keys
-
-    if (this.state.recordingShortcut) {
-      keys = this.state.recordedShortcut
-
-      shortcutFooter = (
-        <div>
-          <Label>
-            Recording shortcut...
-
-            &nbsp;
-            &nbsp;
-            &nbsp;
-
-            <Link
-              onClick={() => this._cancelRecording()} >
-              Cancel
-            </Link>
-          </Label>
-        </div>
-      )
-
-    } else {
-      keys = this.state.shortcut.split('+')
-
-      shortcutFooter = (
-        <div>
-          <Link
-            onClick={() => this._startRecording()} >
-            Change
-          </Link>
-        </div>
-      )
-    }
+    const {
+      autoUpdate,
+      deleteAfterUpload,
+      filenameHandling,
+      launchAtLogin,
+      recordedShortcut,
+      recordingShortcut,
+      shortcut,
+    } = this.state
+    const keys = recordingShortcut ? recordedShortcut : shortcut.split('+')
 
     return (
-      <div>
-        <table>
-          <tbody>
-            <tr>
-              <th style={{ verticalAlign: 'text-top' }} >
-                <Label>Shortcut:</Label>
-              </th>
+      <React.Fragment>
+        <header>
+          <h1>General</h1>
+        </header>
 
-              <td>
-                <div className="kbd-container">
-                  {this._renderKeys(keys)}
-                </div>
-                {shortcutFooter}
-              </td>
-            </tr>
+        <section className="setting">
+          <header>Keyboard Shortcut</header>
 
-            <tr>
-              <th>
-                <Label>Filenames:</Label>
-              </th>
+          <div className="control">
+            <KBDContainer
+              editable
+              keys={keys}
+              onCancel={this._cancelRecording}
+              onChange={this._startRecording}
+              recording={recordingShortcut} />
+          </div>
 
-              <td>
-                <select
-                  onChange={event => this.setState({ filenameHandling: event.target.value })}
-                  value={this.state.filenameHandling}>
-                  <option value="original">Original Filename</option>
-                  <option value="hash">Random Hash</option>
-                  <option value="original+hash">Original Filename + Random Hash</option>
-                </select>
-              </td>
-            </tr>
+          <p>This is the decription!</p>
+        </section>
 
-            <tr>
-              <th style={{ verticalAlign: 'text-top' }}>
-                <Label>Startup:</Label>
-              </th>
+        <section className="setting">
+          <header><label htmlFor="filenameHandling">Filenames</label></header>
 
-              <td>
-                <Checkbox
-                  defaultChecked={this.state.launchAtLogin}
-                  label="Launch at login"
-                  onChange={event => this.setState({ launchAtLogin: event.target.checked })}
-                  />
+          <div className="control">
+            <select
+              onChange={({ target: { value } }) => this._updateSetting('filenameHandling', value)}
+              value={filenameHandling}>
+              <option value="original">Original Filename</option>
+              <option value="hash">Random Hash</option>
+              <option value="original+hash">Original Filename + Random Hash</option>
+            </select>
+          </div>
 
-                <Checkbox
-                  defaultChecked={this.state.autoUpdate}
-                  label="Automatically check for updates"
-                  onChange={event => this.setState({ autoUpdate: event.target.checked })}
-                  />
-              </td>
-            </tr>
+          <p>This is the decription!</p>
+        </section>
 
-            <tr>
-              <th style={{ verticalAlign: 'text-top' }}>
-                <Label>Miscellaneous:</Label>
-              </th>
+        <section className="setting">
+          <header><label htmlFor="deleteAfterUpload">Delete Files After Upload</label></header>
 
-              <td>
-                <Checkbox
-                  defaultChecked={this.state.deleteAfterUpload}
-                  label="Delete after upload"
-                  onChange={event => this.setState({ deleteAfterUpload: event.target.checked })}
-                  />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          <div className="control">
+            <Switch
+              checked={deleteAfterUpload}
+              id="deleteAfterUpload"
+              onChange={({ target: { checked } }) => this._updateSetting('deleteAfterUpload', checked)} />
+          </div>
+
+          <p>This is the decription!</p>
+        </section>
+
+        <section className="setting">
+          <header>Launch at Login</header>
+
+          <div className="control">
+            <Switch
+              checked={launchAtLogin}
+              id="launchAtLogin"
+              onChange={this._toggleLaunchAtLogin} />
+          </div>
+
+          <p>This is the decription!</p>
+        </section>
+
+        <section className="setting">
+          <header>Automatically Check for Updates</header>
+
+          <div className="control">
+            <Switch
+              checked={autoUpdate}
+              id="autoUpdate"
+              onChange={({ target: { checked } }) => this._updateSetting('autoUpdate', checked)} />
+          </div>
+
+          <p>This is the decription!</p>
+        </section>
+      </React.Fragment>
     )
   }
-
-
-
-
-
-  /***************************************************************************\
-    Getters
-  \***************************************************************************/
-
-  get title () {
-    return 'General'
-  }
 }
+
+
+
+
+
+export default GeneralPane

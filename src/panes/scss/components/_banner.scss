@@ -1,0 +1,30 @@
+[role=banner] {
+  -webkit-app-region: drag;
+
+  background-color: $darkest-grey;
+  grid-area: banner;
+  min-width: 12rem;
+  overflow: auto;
+  padding: 4rem 1rem;
+
+  li {
+    margin-bottom: 0.2rem;
+  }
+
+  button {
+    -webkit-app-region: no-drag;
+
+    padding: 0.5rem 1rem;
+    text-align: left;
+    width: 100%;
+
+    &:hover {
+      background-color: rgba($dark-grey, 1);
+    }
+
+    &[data-selected=true] {
+      background-color: $blue;
+      font-weight: bold;
+    }
+  }
+}

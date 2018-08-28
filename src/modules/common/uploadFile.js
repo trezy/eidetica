@@ -1,54 +1,106 @@
-import { clipboard } from 'electron'
+// Module imports
+/* eslint-disable import/no-extraneous-dependencies */
+import {
+  clipboard,
+  Notification,
+} from 'electron'
+/* eslint-enable */
 import log from 'electron-log'
-import notify from 'electron-main-notification'
 import path from 'path'
-import scpClient from 'scp2'
+// import scpClient from 'scp2'
+import { Client } from 'scp2'
 
 
 
 
 
-import generateShortlink from './generateShortlink'
-import getPrivateKeys from './getPrivateKeys'
-import getSCPConfig from './getSCPConfig'
+// Component imports
+import {
+  generateShortlink,
+  getSCPConfig,
+} from '.'
+import { updateIcon } from '../trayIcon'
 
 
 
 
 
-module.exports = function (filepath) {
-  let filename = path.basename(filepath)
-  let privateKeys = getPrivateKeys()
-  let scpConfig = getSCPConfig()
+const uploadFile = async filepath => {
+  const filename = path.basename(filepath)
+  const scpConfig = getSCPConfig()
 
   log.info('Uploading file', filename)
 
-  let keysToTry = scpConfig.password ? 1 : privateKeys.length
-  let shouldContinue = true
+  const scpClient = new Client(scpConfig)
 
-  for (let i = 0; i < keysToTry; i++) {
-    if (!scpConfig.password) {
-      scpConfig.privateKey = privateKeys[i]
-    }
+  scpClient.on('connect', () => log.info('Connected to server'))
+  scpClient.on('error', error => log.error('Error uploading file:', error))
+  scpClient.on('transfer', (buffer, uploaded, total) => updateIcon(uploaded / total))
 
-    scpClient.scp(filepath, scpConfig, error => {
-      if (error) {
-        return log.error('Upload error:', error)
-      }
+  const uploadSuccessNotification = new Notification({
+    // actions: [
+    //   {
+    //     text: 'View',
+    //     type: 'button',
+    //   },
+    //   {
+    //     text: 'Copy to Clipboard',
+    //     type: 'button',
+    //   },
+    // ],
+    body: 'Your upload is complete and a link has been placed in your clipboard.',
+    title: 'Upload complete',
+  })
 
-      shouldContinue = false
+  // uploadSuccessNotification.on('action', (event, index) => {
+  //   if (index === 0) {
+  //     log.info('View')
+  //   } else if (index === 1) {
+  //     log.info('Copy to Clipboard')
+  //   }
+  // })
 
-      log.info('Upload success!')
+  const uploadErrorNotification = new Notification({
+    body: 'There was an error uploading your file.',
+    sound: 'Basso',
+    title: 'Error uploading file',
+  })
 
-      clipboard.writeText(generateShortlink(filename))
+  const uploadStartNotification = new Notification({
+    body: 'Please wait...',
+    silent: true,
+    sound: false,
+    title: 'Uploading',
+  })
 
-      notify('File uploaded!', {
-        body: 'The URL has been copied to your clipboard.'
+  uploadStartNotification.show()
+
+  try {
+    await new Promise((resolve, reject) => {
+      scpClient.upload(filepath, scpConfig.path, error => {
+        if (!error) {
+          log.info('Upload success!')
+
+          clipboard.clear()
+          clipboard.writeText(generateShortlink(filename))
+
+          return resolve(true)
+        }
+
+        return reject(error)
       })
     })
 
-    if (shouldContinue) {
-      break // Escape the loop since we've successfully uploaded the file
-    }
+    uploadSuccessNotification.show()
+  } catch (error) {
+    uploadErrorNotification.show()
   }
+
+  uploadStartNotification.close()
 }
+
+
+
+
+
+export { uploadFile }

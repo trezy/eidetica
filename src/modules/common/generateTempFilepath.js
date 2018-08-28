@@ -1,4 +1,7 @@
+// Module imports
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { app } from 'electron'
+import ElectronConfig from 'electron-config'
 import path from 'path'
 import shorthash from 'shorthash'
 
@@ -6,39 +9,47 @@ import shorthash from 'shorthash'
 
 
 
-let config = new (require('electron-config'))
+const config = new ElectronConfig
 
 
 
 
 
-module.exports = function (extension, filename) {
-  let filenameHandling = config.get('filenameHandling')
-  let filepath
-  let newFilename
-  let originalFilename
+const generateTempFilepath = (extension, filename) => {
+  const filenameHandling = config.get('filenameHandling')
+  let filepath = null
+  let newFilename = null
+  let originalFilename = null
 
   if (filename) {
     originalFilename = path.parse(filename)
   }
 
   if (!filename || filenameHandling.indexOf('hash') !== -1) {
-    filename = `${shorthash.unique((new Date()).toString())}`
+    newFilename = `${shorthash.unique((new Date()).toString())}`
 
     if (filenameHandling === 'original+hash' && originalFilename) {
-      filename = `${originalFilename.name}-${filename}`
+      newFilename = `${originalFilename.name}-${newFilename}`
     }
 
     if (extension) {
+      let newExtension = extension
+
       if (extension.indexOf('.') === 0) {
-        extension = extension.replace(/^\./, '')
+        newExtension = newExtension.replace(/^\./, '')
       }
 
-      filename += `.${extension}`
+      newFilename += `.${newExtension}`
     }
   }
 
-  filepath = path.resolve(app.getPath('temp'), filename)
+  filepath = path.resolve(app.getPath('temp'), newFilename)
 
   return filepath
 }
+
+
+
+
+
+export { generateTempFilepath }
