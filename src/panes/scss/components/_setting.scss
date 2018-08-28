@@ -1,0 +1,31 @@
+.setting {
+  align-items: center;
+  border-bottom-width: 1px;
+  border-color: $grey;
+  border-style: solid;
+  display: grid;
+  grid-gap: 0.5rem;
+  grid-template-areas: 'header control';
+  grid-template-columns: max-content max-content;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  width: 100%;
+
+  header {
+    font-weight: bold;
+    grid-area: header;
+  }
+
+  .control {
+    grid-area: control;
+    text-align: right;
+  }
+
+  p {
+    color: $grey;
+    font-size: 0.8em;
+    grid-column-end: 3;
+    grid-column-start: 1;
+  }
+}

@@ -1,0 +1,6 @@
+@mixin link {
+  color: $light-blue;
+  font-weight: bold;
+  text-decoration: underline;
+  text-shadow: 0 0 0.2rem $black;
+}

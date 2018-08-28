@@ -62,12 +62,6 @@ const setupUploadListener = () => {
       'NSPasteboardTypeURL',
     ]
 
-    for (const pasteboardType of pasteboardTypes) {
-      console.log(`${pasteboardType}:`, clipboard.readBuffer(pasteboardType).toString('utf8'))
-      console.log('')
-    }
-    console.log('=== Clipboard data ===')
-
     if (clipboardFileContents) {
       const matches = clipboardFileContents.match(/<string>.*<\/string>/gi)
       const files = matches.map(string => entities.decode(string.replace(/<\/*string>/gi, '')))

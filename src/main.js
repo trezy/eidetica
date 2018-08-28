@@ -67,28 +67,49 @@ new class App {
     // Get the screenshot folder
     this.screenshotFolder = app.getPath('desktop')
 
+    // By default, close events shouldn't actually close the app
+    app.shouldQuit = false
+
     // Prevent the dock icon from being displayed in production
     if (!isDevelopmentMode()) {
       app.dock.hide()
     }
 
     // Preload the pane in a hidden browser window
-    this.pane = createPane()
+    // app.pane = createPane()
 
     // Create the system tray icon
     await updateIcon()
 
-    app.tray.setToolTip(app.getName())
-    app.tray.setContextMenu(Menu.buildFromTemplate([
+    const menuOptions = [
       {
         label: 'Preferences...',
-        click: this.showPreferencesPane,
+        click: createPane,
       },
       {
         label: 'Quit',
-        click: app.quit,
+        click: () => {
+          app.shouldQuit = true
+          app.quit()
         },
-    ]))
+      },
+    ]
+
+    if (isDevelopmentMode()) {
+      menuOptions.push({
+        label: 'Restart',
+        click: () => {
+          app.shouldQuit = true
+          app.relaunch()
+          app.quit()
+        },
+      })
+    }
+
+    app.tray.setToolTip(app.getName())
+    app.tray.setContextMenu(Menu.buildFromTemplate(menuOptions))
+
+    app.on('will-quit', event => (!app.shouldQuit ? event.preventDefault() : null))
 
     // Start listening for screenshots to be taken
     this.startScreenshotListener()
@@ -96,10 +117,6 @@ new class App {
     setupUploadListener()
 
     log.info('App initialized')
-  }
-
-  showPreferencesPane = () => {
-    this.pane.loadPane('index')
   }
 
   startScreenshotListener = () => {

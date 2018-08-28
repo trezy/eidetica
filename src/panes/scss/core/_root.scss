@@ -4,20 +4,24 @@
 
 html, body {
   margin: 0;
+  height: 100vh;
   padding: 0;
+  width: 100vw;
 }
 
 body {
-  background-color: $darkest-grey;
+  background-color: $dark-grey;
   color: $white;
   font-family: Montserrat;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 200;
 }
 
-[data-reactroot] {
+#root {
   display: grid;
   grid-template-areas: 'banner main';
-  grid-template-columns: 20rem auto;
-  // height: auto !important;
+  grid-template-columns: minmax(max-content, 30vw) minmax(max-content, 70vw);
+  height: 100vh;
+  overflow: hidden;
+  width: 100vw;
 }

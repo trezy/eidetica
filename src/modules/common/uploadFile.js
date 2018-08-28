@@ -33,14 +33,32 @@ const uploadFile = async filepath => {
 
   const scpClient = new Client(scpConfig)
 
-  scpClient.on('connect', () => console.log('connected!'))
-  scpClient.on('error', error => console.log('error:', error))
+  scpClient.on('connect', () => log.info('Connected to server'))
+  scpClient.on('error', error => log.error('Error uploading file:', error))
   scpClient.on('transfer', (buffer, uploaded, total) => updateIcon(uploaded / total))
 
   const uploadSuccessNotification = new Notification({
+    // actions: [
+    //   {
+    //     text: 'View',
+    //     type: 'button',
+    //   },
+    //   {
+    //     text: 'Copy to Clipboard',
+    //     type: 'button',
+    //   },
+    // ],
     body: 'Your upload is complete and a link has been placed in your clipboard.',
     title: 'Upload complete',
   })
+
+  // uploadSuccessNotification.on('action', (event, index) => {
+  //   if (index === 0) {
+  //     log.info('View')
+  //   } else if (index === 1) {
+  //     log.info('Copy to Clipboard')
+  //   }
+  // })
 
   const uploadErrorNotification = new Notification({
     body: 'There was an error uploading your file.',

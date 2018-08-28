@@ -1,17 +1,11 @@
-const { app } = require('electron').remote
+// Module imports
 import React from 'react'
-import {
-  SegmentedControl,
-  SegmentedControlItem,
-  Text,
-  TitleBar,
-  Window
-} from 'react-desktop/macOs'
 
 
 
 
 
+// Component imports
 import AboutPane from './AboutPane'
 import GeneralPane from './GeneralPane'
 import UploadPane from './UploadPane'
@@ -20,37 +14,39 @@ import UploadPane from './UploadPane'
 
 
 
-export default class extends React.Component {
-  componentDidMount () {
-    this.resizeWindow()
-  }
+// Component constants
+/* eslint-disable import/no-extraneous-dependencies */
+const { app } = require('electron').remote
+/* eslint-enable */
 
-  componentDidUpdate () {
-    this.resizeWindow()
-  }
 
-  constructor (props) {
-    super(props)
 
-    this.handleClose = this.handleClose.bind(this)
-    this.handleMinimize = this.handleMinimize.bind(this)
-    this.handleResize = this.handleResize.bind(this)
 
-    this.state = {
-      isFullscreen: false,
-      selected: 'general'
-    }
-  }
 
-  handleClose () {
+class Preferences extends React.Component {
+  /***************************************************************************\
+    Local properties
+  \***************************************************************************/
+
+  state = { currentView: 'general' }
+
+
+
+
+
+  /***************************************************************************\
+    Public methods
+  \***************************************************************************/
+
+  static handleClose () {
     app.pane.hide()
   }
 
-  handleMinimize () {
+  static handleMinimize () {
     app.pane.minimize()
   }
 
-  handleResize () {
+  static handleResize () {
     if (app.pane.isMaximized()) {
       app.pane.unmaximize()
     } else {
@@ -59,41 +55,63 @@ export default class extends React.Component {
   }
 
   render () {
-    return (
-      <Window>
-        <TitleBar
-          controls
-          onCloseClick={this.handleClose}
-          onMinimizeClick={this.handleMinimize}
-          onResizeClick={this.handleResize}
-          title="Eidetica Settings" />
+    const { currentView } = this.state
 
-        <SegmentedControl box>
-          {this.renderItem('General', <GeneralPane />)}
-          {this.renderItem('Uploads', <UploadPane />)}
-          {this.renderItem('About', <AboutPane />)}
-        </SegmentedControl>
-      </Window>
-    )
-  }
-
-  renderItem (title, component) {
-    let safeTitle = title.toLowerCase().replace(' ', '-')
+    const currentViewIsAbout = currentView === 'about'
+    const currentViewIsGeneral = currentView === 'general'
+    const currentViewIsUploads = currentView === 'uploads'
 
     return (
-      <SegmentedControlItem
-        title={title}
-        selected={this.state.selected === safeTitle}
-        onSelect={() => this.setState({ selected: safeTitle })} >
-        {component}
-      </SegmentedControlItem>
+      <React.Fragment>
+        <div className="application-handle" />
+
+        <nav role="banner">
+          <ul>
+            <li>
+              <button
+                data-selected={currentViewIsGeneral}
+                onClick={() => this.setState({ currentView: 'general' })}>
+                General
+              </button>
+            </li>
+
+            <li>
+              <button
+                data-selected={currentViewIsUploads}
+                onClick={() => this.setState({ currentView: 'uploads' })}>
+                Uploads
+              </button>
+            </li>
+
+            <li>
+              <button
+                data-selected={currentViewIsAbout}
+                onClick={() => this.setState({ currentView: 'about' })}>
+                About
+              </button>
+            </li>
+          </ul>
+
+          <div className="BAX" />
+        </nav>
+
+        <main>
+          {currentViewIsAbout && (
+            <AboutPane />
+          )}
+
+          {currentViewIsGeneral && (
+            <GeneralPane />
+          )}
+
+          {currentViewIsUploads && (
+            <UploadPane />
+          )}
+        </main>
+      </React.Fragment>
     )
-  }
-
-  resizeWindow () {
-    let height = document.querySelector('#root').clientHeight
-    let width = app.pane.getSize()[0]
-
-    app.pane.setSize(width, height, true)
   }
 }
+
+export default Preferences
+export { Preferences }

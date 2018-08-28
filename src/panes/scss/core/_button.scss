@@ -1,0 +1,22 @@
+button,
+input[type=button] {
+  background-color: transparent;
+  background-image: none;
+  border-color: transparent;
+  border-radius: 0.2rem;
+  border-style: solid;
+  border-width: 0;
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+
+  &, *:focus { outline: none }
+
+  &.link {
+    @include link;
+
+    padding: 0;
+  }
+}

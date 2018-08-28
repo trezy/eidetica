@@ -1,3 +1,18 @@
 .kbd-container {
   min-height: 22px;
+  position: relative;
+
+  footer {
+    color: $grey;
+    content: 'Recording...';
+    font-size: 0.8em;
+    margin-top: 0.2rem;
+    position: absolute;
+    right: 0;
+    top: 100%;
+
+    span {
+      margin-right: 1rem;
+    }
+  }
 }

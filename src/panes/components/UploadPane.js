@@ -1,6 +1,4 @@
-import {
-  Label
-} from 'react-desktop/macOs'
+import Config from 'electron-config'
 import React from 'react'
 
 
@@ -13,24 +11,36 @@ import Pane from './Pane'
 
 
 
-let config = new (require('electron-config'))
+const config = new Config
 
 
 
 
 
 export default class extends Pane {
+  /***************************************************************************\
+    Local properties
+  \***************************************************************************/
+
+  state = {
+    host: config.get('host'),
+    port: config.get('port'),
+    password: config.get('password'),
+    path: config.get('path'),
+    url: config.get('url'),
+    username: config.get('username'),
+  }
+
+
+
+
 
   /***************************************************************************\
     Private methods
   \***************************************************************************/
 
-  _handleChange (event) {
-    let newState = {}
-
-    newState[event.target.getAttribute('name')] = event.target.value
-
-    this.setState(newState)
+  _handleChange = ({ target }) => {
+    this.setState({ [target.getAttribute('name')]: target.value })
   }
 
 
@@ -49,113 +59,103 @@ export default class extends Pane {
     })
   }
 
-  constructor (props) {
-    super(props)
-
-    this._handleChange = this._handleChange.bind(this)
-
-    this.state = {
-      host: config.get('host'),
-      port: config.get('port'),
-      password: config.get('password'),
-      path: config.get('path'),
-      url: config.get('url'),
-      username: config.get('username'),
-    }
-  }
-
   render () {
     return (
-      <div>
-        <table>
-          <tbody>
-            <tr>
-              <th>
-                <Label>Host:</Label>
-              </th>
+      <React.Fragment>
+        <header>
+          <h1>Uploads</h1>
+        </header>
 
-              <td>
-                <input
-                  name="host"
-                  onChange={this._handleChange}
-                  placeholder="eidetica.io"
-                  type="url"
-                  value={this.state.host} />
-              </td>
-            </tr>
+        <section className="setting" data-field="host">
+          <header>Host</header>
 
-            <tr>
-              <th>
-                <Label>Port:</Label>
-              </th>
-              <td>
-                <input
-                  onChange={this._handleChange}
-                  name="port"
-                  placeholder="22"
-                  type="number"
-                  value={this.state.port} />
-              </td>
-            </tr>
+          <div className="control">
+            <input
+              name="host"
+              onChange={this._handleChange}
+              placeholder="eidetica.io"
+              type="url"
+              value={this.state.host} />
+          </div>
 
-            <tr>
-              <th>
-                <Label>Username:</Label>
-              </th>
-              <td>
-                <input
-                  onChange={this._handleChange}
-                  name="username"
-                  placeholder="eidetica-user"
-                  type="text"
-                  value={this.state.username} />
-              </td>
-            </tr>
+          <p>This is the decription!</p>
+        </section>
 
-            <tr>
-              <th>
-                <Label>Password:</Label>
-              </th>
-              <td>
-                <input
-                  onChange={this._handleChange}
-                  name="password"
-                  placeholder="Using SSH private key"
-                  type="password"
-                  value={this.state.password} />
-              </td>
-            </tr>
+        <section className="setting" data-field="port">
+          <header>Port</header>
 
-            <tr>
-              <th>
-                <Label>Path:</Label>
-              </th>
-              <td>
-                <input
-                  onChange={this._handleChange}
-                  name="path"
-                  placeholder="/var/www/uploads/"
-                  type="text"
-                  value={this.state.path} />
-              </td>
-            </tr>
+          <div className="control">
+            <input
+              onChange={this._handleChange}
+              name="port"
+              placeholder="22"
+              type="number"
+              value={this.state.port} />
+          </div>
 
-            <tr>
-              <th>
-                <Label>URL:</Label>
-              </th>
-              <td>
-                <input
-                  onChange={this._handleChange}
-                  name="url"
-                  placeholder="http://eidetica.io/screenshot"
-                  type="url"
-                  value={this.state.url} />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          <p>This is the decription!</p>
+        </section>
+
+        <section className="setting" data-field="username">
+          <header>Username</header>
+
+          <div className="control">
+            <input
+              onChange={this._handleChange}
+              name="username"
+              placeholder="eidetica-user"
+              type="text"
+              value={this.state.username} />
+          </div>
+
+          <p>This is the decription!</p>
+        </section>
+
+        <section className="setting" data-field="password">
+          <header>Password</header>
+
+          <div className="control">
+            <input
+              onChange={this._handleChange}
+              name="password"
+              placeholder="Using SSH private key"
+              type="password"
+              value={this.state.password} />
+          </div>
+
+          <p>This is the decription!</p>
+        </section>
+
+        <section className="setting" data-field="path">
+          <header>Path</header>
+
+          <div className="control">
+            <input
+              onChange={this._handleChange}
+              name="path"
+              placeholder="/var/www/uploads/"
+              type="text"
+              value={this.state.path} />
+          </div>
+
+          <p>This is the decription!</p>
+        </section>
+
+        <section className="setting" data-field="url">
+          <header>URL</header>
+
+          <div className="control">
+            <input
+              onChange={this._handleChange}
+              name="url"
+              placeholder="http://eidetica.io/screenshot"
+              type="url"
+              value={this.state.url} />
+          </div>
+
+          <p>This is the decription!</p>
+        </section>
+      </React.Fragment>
     )
   }
 }

@@ -1,50 +1,48 @@
-const { app } = require('electron').remote
-import {
-  Label,
-  Text
-} from 'react-desktop/macOs'
+// Module imports
 import React from 'react'
 
 
 
 
 
-import Pane from './Pane'
+/* eslint-disable import/no-extraneous-dependencies */
+const { app } = require('electron').remote
+/* eslint-enable */
 
 
 
 
 
-export default class extends Pane {
-  render () {
-    return (
-      <table>
-        <tbody>
-          <tr>
-            <th>
-              <Label>Version:</Label>
-            </th>
+const AboutPane = () => (
+  <React.Fragment>
+    <header><h1>About</h1></header>
 
-            <td><Text>{app.getVersion()}</Text></td>
-          </tr>
+    <table>
+      <tbody>
+        <tr>
+          <th>Version:</th>
 
-          <tr>
-            <th>
-              <Label>Author:</Label>
-            </th>
+          <td>{app.getVersion()}</td>
+        </tr>
 
-            <td><Text><a href="http://trezy.com">Trezy</a></Text></td>
-          </tr>
+        <tr>
+          <th>Author:</th>
 
-          <tr>
-            <th></th>
+          <td><a href="http://trezy.com">Trezy</a></td>
+        </tr>
 
-            <td>
-              <Text>Copyright &copy; {(new Date).getFullYear()} Trezy.com</Text>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    )
-  }
-}
+        <tr>
+          <th />
+
+          <td>Copyright &copy; {(new Date).getFullYear()} Trezy.com</td>
+        </tr>
+      </tbody>
+    </table>
+  </React.Fragment>
+)
+
+
+
+
+
+export default AboutPane
