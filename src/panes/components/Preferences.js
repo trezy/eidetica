@@ -66,6 +66,24 @@ class Preferences extends React.Component {
         <div className="application-handle" />
 
         <nav role="banner">
+          <header>
+            <h1>Useful Stuff</h1>
+          </header>
+
+          <ul>
+            <li>
+              <button
+                className="wip"
+                disabled>
+                Recent Uploads
+              </button>
+            </li>
+          </ul>
+
+          <header>
+            <h1>Settings</h1>
+          </header>
+
           <ul>
             <li>
               <button
@@ -91,8 +109,6 @@ class Preferences extends React.Component {
               </button>
             </li>
           </ul>
-
-          <div className="BAX" />
         </nav>
 
         <main>
@@ -113,5 +129,4 @@ class Preferences extends React.Component {
   }
 }
 
-export default Preferences
 export { Preferences }

@@ -1,11 +1,13 @@
 $black: black;
 
+$white: white;
+
 $blue: #2663ad;
-$light-blue: #4385d6;
+$light-blue: lighten($blue, 15%);
 
 $dark-grey: #333333;
 $darkest-grey: #1a1a1a;
 $grey: #8d8d8d;
 $light-grey: #d9d9d9;
 
-$white: white;
+$red: lighten(red, 15%);
