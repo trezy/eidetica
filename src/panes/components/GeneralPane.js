@@ -1,10 +1,11 @@
-import Config from 'electron-config'
+// Module imports
 import React from 'react'
 
 
 
 
 
+// Component imports
 import KBDContainer from './KBDContainer'
 import Pane from './Pane'
 import Switch from './Switch'
@@ -13,6 +14,7 @@ import Switch from './Switch'
 
 
 
+// Component constants
 /* eslint-disable import/no-extraneous-dependencies */
 const {
   app,
@@ -20,7 +22,6 @@ const {
   globalShortcut,
 } = require('electron').remote
 /* eslint-enable */
-const config = new Config
 
 
 
@@ -40,11 +41,11 @@ class GeneralPane extends Pane {
     recordingShortcut: false,
     shiftIsPressed: false,
 
-    autoUpdate: config.get('autoUpdate'),
-    deleteAfterUpload: config.get('deleteAfterUpload'),
-    filenameHandling: config.get('filenameHandling'),
+    autoUpdate: this.config.get('autoUpdate'),
+    deleteAfterUpload: this.config.get('deleteAfterUpload'),
+    filenameHandling: this.config.get('filenameHandling'),
     launchAtLogin: app.getLoginItemSettings().openAtLogin,
-    shortcut: config.get('shortcut'),
+    shortcut: this.config.get('shortcut'),
   }
 
 
@@ -205,7 +206,7 @@ class GeneralPane extends Pane {
 
   _updateShortcut (shortcut) {
     this.setState({ shortcut })
-    config.set('shortcut', shortcut)
+    this.config.set('shortcut', shortcut)
     BrowserWindow.getFocusedWindow().emit('shortcut-updated')
   }
 

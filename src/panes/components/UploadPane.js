@@ -1,4 +1,3 @@
-import Config from 'electron-config'
 import React from 'react'
 
 
@@ -11,24 +10,18 @@ import Pane from './Pane'
 
 
 
-const config = new Config
-
-
-
-
-
-export default class extends Pane {
+class UploadPane extends Pane {
   /***************************************************************************\
     Local properties
   \***************************************************************************/
 
   state = {
-    host: config.get('host'),
-    port: config.get('port'),
-    password: config.get('password'),
-    path: config.get('path'),
-    url: config.get('url'),
-    username: config.get('username'),
+    host: this.config.get('host'),
+    port: this.config.get('port'),
+    password: this.config.get('password'),
+    path: this.config.get('path'),
+    url: this.config.get('url'),
+    username: this.config.get('username'),
   }
 
 
@@ -159,3 +152,70 @@ export default class extends Pane {
     )
   }
 }
+
+          <div className="control">
+            <input
+              onChange={this._handleChange}
+              name="username"
+              placeholder="eidetica-user"
+              type="text"
+              value={this.state.username} />
+          </div>
+
+          <p>This is the decription!</p>
+        </section>
+
+        <section className="setting" data-field="password">
+          <header>Password</header>
+
+          <div className="control">
+            <input
+              onChange={this._handleChange}
+              name="password"
+              placeholder="Using SSH private key"
+              type="password"
+              value={this.state.password} />
+          </div>
+
+          <p>This is the decription!</p>
+        </section>
+
+        <section className="setting" data-field="path">
+          <header>Path</header>
+
+          <div className="control">
+            <input
+              onChange={this._handleChange}
+              name="path"
+              placeholder="/var/www/uploads/"
+              type="text"
+              value={this.state.path} />
+          </div>
+
+          <p>This is the decription!</p>
+        </section>
+
+        <section className="setting" data-field="url">
+          <header>URL</header>
+
+          <div className="control">
+            <input
+              onChange={this._handleChange}
+              name="url"
+              placeholder="http://eidetica.io/screenshot"
+              type="url"
+              value={this.state.url} />
+          </div>
+
+          <p>This is the decription!</p>
+        </section> */}
+      </React.Fragment>
+    )
+  }
+}
+
+
+
+
+
+export default UploadPane
