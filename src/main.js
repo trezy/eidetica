@@ -5,9 +5,14 @@ import {
   Menu,
 } from 'electron'
 /* eslint-enable */
-import fs from 'fs'
+import { enableLiveReload } from 'electron-compile'
 import Config from 'electron-config'
+import fs from 'fs'
 import log from 'electron-log'
+
+
+
+
 
 // Component imports
 import {
@@ -60,6 +65,9 @@ new class App {
 
   initialize = async () => {
     log.info('Initializing app')
+
+    // Enable hot swapping for React
+    enableLiveReload({ strategy: 'react-hmr' })
 
     // Set up the default items for all context menus
     setupApplicationMenu()

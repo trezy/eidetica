@@ -1,10 +1,25 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-
-import PreferencesWindow from './components/Preferences'
-
+import { AppContainer } from 'react-hot-loader'
 
 
 
 
-ReactDOM.render(<PreferencesWindow />, document.querySelector('#root'))
+
+const render = () => {
+  /* eslint-disable global-require */
+  const { Preferences } = require('./components/Preferences')
+  /* eslint-enable */
+
+  ReactDOM.render(<AppContainer><Preferences /></AppContainer>, document.querySelector('#root'))
+}
+
+
+
+
+
+render()
+
+if (module.hot) {
+  module.hot.accept(render)
+}
