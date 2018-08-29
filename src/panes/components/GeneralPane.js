@@ -239,7 +239,7 @@ class GeneralPane extends Pane {
     return (
       <React.Fragment>
         <header>
-          <h1>General</h1>
+          <h1>General Settings</h1>
         </header>
 
         <section className="setting">

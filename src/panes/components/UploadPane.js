@@ -63,7 +63,7 @@ export default class extends Pane {
     return (
       <React.Fragment>
         <header>
-          <h1>Uploads</h1>
+          <h1>Upload Settings</h1>
         </header>
 
         <section className="setting" data-field="host">

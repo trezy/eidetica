@@ -15,7 +15,7 @@ const { app } = require('electron').remote
 
 const AboutPane = () => (
   <React.Fragment>
-    <header><h1>About</h1></header>
+    <header><h1>About Eidetica</h1></header>
 
     <table>
       <tbody>
