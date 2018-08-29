@@ -7,6 +7,19 @@ import Config from 'electron-config'
 
 export default class extends React.Component {
   /***************************************************************************\
+    Private methods
+  \***************************************************************************/
+
+  _updateSetting (setting, value) {
+    this.setState({ [setting]: value })
+    this.config.set(setting, value)
+  }
+
+
+
+
+
+  /***************************************************************************\
     Getters
   \***************************************************************************/
 

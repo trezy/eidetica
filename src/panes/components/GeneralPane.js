@@ -199,11 +199,6 @@ class GeneralPane extends Pane {
     app.setLoginItemSettings({ openAtLogin: shouldLaunchAtLogin })
   }
 
-  _updateSetting (setting, value) {
-    this.setState({ [setting]: value })
-    config.set(setting, value)
-  }
-
   _updateShortcut (shortcut) {
     this.setState({ shortcut })
     this.config.set('shortcut', shortcut)
