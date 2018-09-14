@@ -1,0 +1,10 @@
+textarea {
+  @include input;
+
+  min-height: 10rem;
+  resize: vertical;
+
+  &.code {
+    @include code;
+  }
+}

@@ -1,0 +1,16 @@
+@mixin input {
+  background-color: $darkest-grey;
+  border-color: $black;
+  border-radius: 0.5rem;
+  border-style: solid;
+  border-width: 0.1rem;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  margin: 0;
+  padding: 1rem;
+
+  &:placeholder {
+    color: $grey;
+  }
+}

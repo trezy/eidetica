@@ -1,0 +1,26 @@
+.card {
+  background-color: rgba($darkest-grey, 0.5);
+  border-radius: 0.5rem;
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-areas:
+    'header'
+    'body'
+    'footer';
+  padding: 2rem;
+
+  > header {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    grid-area: header;
+  }
+
+  > footer {
+    grid-area: footer;
+  }
+
+  > .body {
+    grid-area: body;
+  }
+}

@@ -78,6 +78,14 @@ class Preferences extends React.Component {
                 Recent Uploads
               </button>
             </li>
+
+            <li>
+              <button
+                className="wip"
+                disabled>
+                Devices
+              </button>
+            </li>
           </ul>
 
           <header>
@@ -98,6 +106,14 @@ class Preferences extends React.Component {
                 data-selected={currentViewIsUploads}
                 onClick={() => this.setState({ currentView: 'uploads' })}>
                 Uploads
+              </button>
+            </li>
+
+            <li>
+              <button
+                className="wip"
+                disabled>
+                Account
               </button>
             </li>
 

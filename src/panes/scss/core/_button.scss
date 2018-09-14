@@ -1,9 +1,30 @@
+$button-styles: (
+  danger: (
+    main-color: $red,
+    text-color: $white,
+  ),
+
+  primary: (
+    main-color: $blue,
+    text-color: $white,
+  ),
+
+  secondary: (
+    main-color: $grey,
+    text-color: $white,
+  ),
+);
+
+
+
+
+
 button,
 input[type=button] {
   background-color: transparent;
   background-image: none;
   border-color: transparent;
-  border-radius: 0.2rem;
+  border-radius: 0.5rem;
   border-style: solid;
   border-width: 0;
   color: inherit;
@@ -11,6 +32,7 @@ input[type=button] {
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
+  padding: 1rem 1.5rem;
 
   &, *:focus { outline: none }
 
@@ -18,5 +40,58 @@ input[type=button] {
     @include link;
 
     padding: 0;
+  }
+
+  @each $button-style, $properties in $button-styles {
+    &.#{$button-style} {
+      $main-color: map-get($properties, main-color);
+      $text-color: map-get($properties, text-color);
+
+      background-color: darken($main-color, 10%);
+      border-color: darken($main-color, 10%);
+      border-style: solid;
+      border-width: 0.1rem;
+      color: $text-color;
+      transition-duration: 0.2s;
+      transition-property: all;
+
+      &:hover {
+        background-color: $main-color;
+        border-color: $main-color;
+        color: $text-color;
+      }
+
+      &.disabled,
+      &:disabled {
+        &, &:hover {
+          background-color: darken($main-color, 20%);
+          border-color: darken($main-color, 20%);
+          color: darken($text-color, 20%);
+          cursor: not-allowed;
+        }
+      }
+
+      &.outline {
+        background-color: transparent;
+        border-color: darken($main-color, 10%);
+        color: darken($main-color, 10%);
+
+        &:hover {
+          background-color: $main-color;
+          border-color: $main-color;
+          color: $text-color;
+        }
+
+        &.disabled,
+        &:disabled {
+          &, &:hover {
+            background-color: transparent;
+            border-color: darken($main-color, 20%);
+            color: darken($main-color, 20%);
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
   }
 }

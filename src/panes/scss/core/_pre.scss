@@ -1,0 +1,9 @@
+pre {
+  @include code;
+
+  background-color: $dark-grey;
+  border-radius: 0.5rem;
+  overflow: auto;
+  padding: 2rem;
+  white-space: pre-wrap;
+}

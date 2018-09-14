@@ -1,0 +1,21 @@
+.option-group {
+  .card {
+    cursor: pointer;
+    grid-template-areas:
+      'control header'
+      'control body'
+      'control footer';
+    grid-template-columns: min-content auto;
+    margin-bottom: 1rem;
+    transition-duration: 0.2s;
+    transition-property: all;
+
+    &[data-selected]:not([data-selected=false]) {
+      background-color: $blue;
+
+      .body { color: $white }
+    }
+  }
+
+  .control { grid-area: control }
+}

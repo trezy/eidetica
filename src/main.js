@@ -159,6 +159,7 @@ new class App {
         deleteAfterUpload: true,
         filenameHandling: 'hash',
         launchAtLogin: true,
+        providers: [],
         shortcut: 'Super+Control+U',
 
         // Server settings

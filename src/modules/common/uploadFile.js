@@ -5,9 +5,9 @@ import {
   Notification,
 } from 'electron'
 /* eslint-enable */
+import Config from 'electron-store'
 import log from 'electron-log'
 import path from 'path'
-// import scpClient from 'scp2'
 import { Client } from 'scp2'
 
 
@@ -15,11 +15,15 @@ import { Client } from 'scp2'
 
 
 // Component imports
-import {
-  generateShortlink,
-  getSCPConfig,
-} from '.'
+import { generateShortlink } from '.'
 import { updateIcon } from '../trayIcon'
+
+
+
+
+
+// Component constants
+const config = new Config
 
 
 
@@ -27,11 +31,13 @@ import { updateIcon } from '../trayIcon'
 
 const uploadFile = async filepath => {
   const filename = path.basename(filepath)
-  const scpConfig = getSCPConfig()
+  const providers = config.get('providers')
+
+  log.info('providers', providers)
 
   log.info('Uploading file', filename)
 
-  const scpClient = new Client(scpConfig)
+  const scpClient = new Client(providers[0].settings)
 
   scpClient.on('connect', () => log.info('Connected to server'))
   scpClient.on('error', error => log.error('Error uploading file:', error))
@@ -77,7 +83,7 @@ const uploadFile = async filepath => {
 
   try {
     await new Promise((resolve, reject) => {
-      scpClient.upload(filepath, scpConfig.path, error => {
+      scpClient.upload(filepath, providers[0].settings.path, error => {
         if (!error) {
           log.info('Upload success!')
 

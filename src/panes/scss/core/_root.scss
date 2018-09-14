@@ -1,6 +1,4 @@
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box }
 
 html, body {
   margin: 0;
@@ -8,6 +6,8 @@ html, body {
   padding: 0;
   width: 100vw;
 }
+
+html { font-size: 10px }
 
 body {
   background-color: $dark-grey;
@@ -19,9 +19,12 @@ body {
 
 #root {
   display: grid;
+  filter: blur(0);
   grid-template-areas: 'banner main';
-  grid-template-columns: minmax(max-content, 30vw) minmax(max-content, 70vw);
+  grid-template-columns: 30vw 70vw;
   height: 100vh;
   overflow: hidden;
+  transition-duration: 0.2s;
+  transition-property: filter;
   width: 100vw;
 }

@@ -1,0 +1,26 @@
+menu[type=toolbar] {
+  display: flex;
+
+  ul {
+    margin-bottom: 0;
+  }
+
+  > .primary,
+  > .secondary {
+    display: flex;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  > .primary {
+    margin-left: auto;
+    order: 2;
+  }
+
+  > .secondary {
+    margin-right: auto;
+    order: 1;
+  }
+}

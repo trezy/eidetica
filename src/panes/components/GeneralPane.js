@@ -223,8 +223,6 @@ class GeneralPane extends Pane {
   render () {
     const {
       autoUpdate,
-      deleteAfterUpload,
-      filenameHandling,
       launchAtLogin,
       recordedShortcut,
       recordingShortcut,
@@ -250,36 +248,9 @@ class GeneralPane extends Pane {
               recording={recordingShortcut} />
           </div>
 
-          <p>This is the decription!</p>
-        </section>
-
-        <section className="setting">
-          <header><label htmlFor="filenameHandling">Filenames</label></header>
-
-          <div className="control">
-            <select
-              onChange={({ target: { value } }) => this._updateSetting('filenameHandling', value)}
-              value={filenameHandling}>
-              <option value="original">Original Filename</option>
-              <option value="hash">Random Hash</option>
-              <option value="original+hash">Original Filename + Random Hash</option>
-            </select>
+          <div className="body">
+            <p>This is the description!</p>
           </div>
-
-          <p>This is the decription!</p>
-        </section>
-
-        <section className="setting">
-          <header><label htmlFor="deleteAfterUpload">Delete Files After Upload</label></header>
-
-          <div className="control">
-            <Switch
-              checked={deleteAfterUpload}
-              id="deleteAfterUpload"
-              onChange={({ target: { checked } }) => this._updateSetting('deleteAfterUpload', checked)} />
-          </div>
-
-          <p>This is the decription!</p>
         </section>
 
         <section className="setting">
@@ -292,7 +263,9 @@ class GeneralPane extends Pane {
               onChange={this._toggleLaunchAtLogin} />
           </div>
 
-          <p>This is the decription!</p>
+          <div className="body">
+            <p>This is the description!</p>
+          </div>
         </section>
 
         <section className="setting">
@@ -305,7 +278,9 @@ class GeneralPane extends Pane {
               onChange={({ target: { checked } }) => this._updateSetting('autoUpdate', checked)} />
           </div>
 
-          <p>This is the decription!</p>
+          <div className="body">
+            <p>This is the description!</p>
+          </div>
         </section>
       </React.Fragment>
     )

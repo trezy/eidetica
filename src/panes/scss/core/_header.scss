@@ -1,5 +1,7 @@
-header {}
-
-main > header {
-  margin-bottom: 1rem;
+header {
+  .sub-header {
+    color: $grey;
+    display: block;
+    font-size: 0.8em;
+  }
 }

@@ -1,0 +1,48 @@
+$checkbox-size: 2rem;
+
+
+
+
+
+.checkbox {
+  background-color: transparent;
+  border-color: $white;
+  border-style: solid;
+  border-width: 0.1rem;
+  border-radius: 0.5rem;
+  display: block;
+  height: $checkbox-size;
+  position: relative;
+  width: $checkbox-size;
+
+  &:before {
+    display: block;
+    color: $green;
+    content: '✓';
+    font-size: 3rem;
+    left: 50%;
+    position: absolute;
+    text-align: center;
+    text-shadow: 0 0 0.1rem $dark-grey;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition-duration: 0.1s;
+    transition-property: all;
+    transition-timing-function: ease-in;
+  }
+}
+
+.checkbox-control {
+  display: none;
+  visibility: hidden;
+
+  &:checked + .checkbox {
+    background-color: $blue;
+
+    &:before {
+      transform: translate(-50%, -50%) scale(1);
+      transition-duration: 0.4s;
+      transition-timing-function: cubic-bezier(0, 0.9, 0.98, 1.7);
+    }
+  }
+}

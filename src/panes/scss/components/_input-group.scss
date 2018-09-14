@@ -1,0 +1,27 @@
+.input-group {
+  position: relative;
+
+  label {
+    display: block;
+    font-weight: bold;
+  }
+
+  &[data-optional] label:after {
+    color: $grey;
+    content: 'optional';
+    font-size: 0.6em;
+    margin-left: 0.5em;
+  }
+
+  input,
+  textarea {
+    margin: 1rem 0;
+    width: 100%;
+  }
+
+  sub {
+    color: $grey;
+    font-size: 0.6em;
+    line-height: 2rem;
+  }
+}

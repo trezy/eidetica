@@ -10,6 +10,8 @@ ul {
   }
 
   &.inline {
+    display: inline;
+
     li {
       display: inline;
     }

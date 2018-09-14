@@ -4,28 +4,56 @@
   border-color: $grey;
   border-style: solid;
   display: grid;
-  grid-gap: 0.5rem;
-  grid-template-areas: 'header control';
-  grid-template-columns: max-content max-content;
-  justify-content: space-between;
+  grid-gap: 1rem;
   margin-bottom: 2rem;
   padding-bottom: 2rem;
   width: 100%;
 
   header {
     font-weight: bold;
-    grid-area: header;
   }
 
-  .control {
-    grid-area: control;
-    text-align: right;
-  }
-
-  p {
+  .body {
     color: $grey;
     font-size: 0.8em;
-    grid-column-end: 3;
-    grid-column-start: 1;
+    overflow: hidden;
+    transition-property: height, padding-bottom, padding-bottom;
+    transition-duration: 0.2s;
   }
+
+  &.stacked {
+    align-content: start;
+  }
+
+  &:not(.stacked) {
+    align-items: center;
+    grid-template-areas: 'header control';
+    grid-template-columns: max-content max-content;
+    justify-content: space-between;
+
+    header {
+      grid-area: header;
+    }
+
+    .control {
+      grid-area: control;
+      text-align: right;
+    }
+
+    p {
+      grid-column-end: 3;
+      grid-column-start: 1;
+    }
+  }
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+
+.grid-system > .setting {
+  border: none;
+  padding-bottom: 0;
 }

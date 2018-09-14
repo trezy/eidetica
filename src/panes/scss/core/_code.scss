@@ -1,0 +1,8 @@
+code {
+  @include code;
+
+  background-color: $darkest-grey;
+  border-radius: 0.5rem;
+  display: inline-block;
+  padding: 0 0.5rem;
+}

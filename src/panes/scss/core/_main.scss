@@ -1,5 +1,10 @@
 main {
   grid-area: main;
   overflow: auto;
-  padding: 4rem 2rem;
+  padding: 6rem 2rem;
+
+  > * {
+    max-width: 80rem;
+    width: 100%;
+  }
 }

@@ -1,0 +1,17 @@
+.grid {
+  display: grid;
+  grid-gap: 0.5rem;
+  grid-template-columns: repeat(auto-fill, 1fr);
+
+  &:empty {
+    display: none;
+    margin-bottom: 0;
+  }
+
+  li:last-of-type {
+    align-content: center;
+    align-items: flex-end;
+    display: flex;
+    justify-content: center;
+  }
+}

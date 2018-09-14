@@ -1,0 +1,12 @@
+.grid-system {
+  display: grid;
+  grid-auto-flow: dense;
+  grid-gap: 2rem 1rem;
+  grid-template-columns: repeat(12, 1fr);
+
+  @for $i from 1 through 12 {
+    .column-#{$i} {
+      grid-column-end: span $i;
+    }
+  }
+}

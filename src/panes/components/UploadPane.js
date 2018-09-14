@@ -1,10 +1,16 @@
+// Module imports
 import React from 'react'
 
 
 
 
 
+// Component imports
+import AddProviderDialog from './AddProviderDialog'
+import CustomProvider from './CustomProvider'
+import OptionGroup from './OptionGroup'
 import Pane from './Pane'
+import Switch from './Switch'
 
 
 
@@ -22,6 +28,11 @@ class UploadPane extends Pane {
     path: this.config.get('path'),
     url: this.config.get('url'),
     username: this.config.get('username'),
+
+    addingProvider: false,
+    deleteAfterUpload: this.config.get('deleteAfterUpload'),
+    filenameHandling: this.config.get('filenameHandling'),
+    providers: this.config.get('providers'),
   }
 
 
@@ -36,6 +47,49 @@ class UploadPane extends Pane {
     this.setState({ [target.getAttribute('name')]: target.value })
   }
 
+  _onProviderDialogClose = () => {
+    this.setState({
+      addingProvider: false,
+      providers: this.config.get('providers'),
+    })
+  }
+
+  _renderProvider = provider => (
+    <li key={provider.id}>
+      {(provider.type === 'custom') && (
+        <CustomProvider
+          {...provider}
+          onDelete={this._updateProviders} />
+      )}
+    </li>
+  )
+
+  _renderProviders () {
+    const { providers } = this.state
+
+    const providersAsArray = (Array.isArray(providers) ? providers : [providers])
+
+    return (
+      <ul className="grid">
+        {providersAsArray.map(this._renderProvider)}
+
+        <li className="card">
+          <button
+            className="primary"
+            onClick={() => this.setState({ addingProvider: true })}>
+            ✚ &nbsp; Add a new provider
+          </button>
+        </li>
+      </ul>
+    )
+  }
+
+  _updateProviders = () => {
+    const providers = this.config.get('providers')
+
+    this.setState({ providers })
+  }
+
 
 
 
@@ -44,171 +98,72 @@ class UploadPane extends Pane {
     Public methods
   \***************************************************************************/
 
-  componentWillUpdate (nextProps, nextState) {
-    Object.keys(nextState).forEach(setting => {
-      if (nextState[setting] !== this.state[setting]) {
-        config.set(setting, nextState[setting])
-      }
-    })
-  }
-
   render () {
+    const {
+      addingProvider,
+      deleteAfterUpload,
+      filenameHandling,
+    } = this.state
+
     return (
       <React.Fragment>
         <header>
           <h1>Upload Settings</h1>
         </header>
 
-        <section className="setting" data-field="host">
-          <header>Host</header>
+        <section className="setting stacked">
+          <header><label htmlFor="filenameHandling">Filename Handling</label></header>
 
-          <div className="control">
-            <input
-              name="host"
-              onChange={this._handleChange}
-              placeholder="eidetica.io"
-              type="url"
-              value={this.state.host} />
-          </div>
-
-          <p>This is the decription!</p>
+          <OptionGroup
+            onChange={value => this._updateSetting('filenameHandling', value)}
+            options={[
+              {
+                description: 'All files will be uploaded with their original filename.',
+                title: 'Original Filename',
+                value: 'originalFilename',
+              },
+              {
+                description: 'Uploads will be given a random filename to help prevent overwriting other files.',
+                title: 'Random Hash',
+                value: 'hash',
+              },
+              {
+                title: 'Original Filename + Random Hash',
+                description: 'Uploads will keep their  original filename, but a random has will be added to the end of the filename to help prevent overwriting other files.',
+                value: 'original+hash',
+              },
+            ]}
+            value={filenameHandling} />
         </section>
 
-        <section className="setting" data-field="port">
-          <header>Port</header>
+        <section className="setting">
+          <header><label htmlFor="deleteAfterUpload">Delete Files After Upload</label></header>
 
           <div className="control">
-            <input
-              onChange={this._handleChange}
-              name="port"
-              placeholder="22"
-              type="number"
-              value={this.state.port} />
+            <Switch
+              checked={deleteAfterUpload}
+              id="deleteAfterUpload"
+              onChange={({ target: { checked } }) => this._updateSetting('deleteAfterUpload', checked)} />
           </div>
 
-          <p>This is the decription!</p>
+          <div className="body">
+            <p>This is the description!</p>
+          </div>
         </section>
 
-        <section className="setting" data-field="username">
-          <header>Username</header>
+        <section className="setting stacked" data-field="providers">
+          <header>Upload Providers</header>
 
-          <div className="control">
-            <input
-              onChange={this._handleChange}
-              name="username"
-              placeholder="eidetica-user"
-              type="text"
-              value={this.state.username} />
+          <div className="body">
+            <p>Manage your upload providers.</p>
           </div>
 
-          <p>This is the decription!</p>
+          {this._renderProviders()}
         </section>
 
-        <section className="setting" data-field="password">
-          <header>Password</header>
-
-          <div className="control">
-            <input
-              onChange={this._handleChange}
-              name="password"
-              placeholder="Using SSH private key"
-              type="password"
-              value={this.state.password} />
-          </div>
-
-          <p>This is the decription!</p>
-        </section>
-
-        <section className="setting" data-field="path">
-          <header>Path</header>
-
-          <div className="control">
-            <input
-              onChange={this._handleChange}
-              name="path"
-              placeholder="/var/www/uploads/"
-              type="text"
-              value={this.state.path} />
-          </div>
-
-          <p>This is the decription!</p>
-        </section>
-
-        <section className="setting" data-field="url">
-          <header>URL</header>
-
-          <div className="control">
-            <input
-              onChange={this._handleChange}
-              name="url"
-              placeholder="http://eidetica.io/screenshot"
-              type="url"
-              value={this.state.url} />
-          </div>
-
-          <p>This is the decription!</p>
-        </section>
-      </React.Fragment>
-    )
-  }
-}
-
-          <div className="control">
-            <input
-              onChange={this._handleChange}
-              name="username"
-              placeholder="eidetica-user"
-              type="text"
-              value={this.state.username} />
-          </div>
-
-          <p>This is the decription!</p>
-        </section>
-
-        <section className="setting" data-field="password">
-          <header>Password</header>
-
-          <div className="control">
-            <input
-              onChange={this._handleChange}
-              name="password"
-              placeholder="Using SSH private key"
-              type="password"
-              value={this.state.password} />
-          </div>
-
-          <p>This is the decription!</p>
-        </section>
-
-        <section className="setting" data-field="path">
-          <header>Path</header>
-
-          <div className="control">
-            <input
-              onChange={this._handleChange}
-              name="path"
-              placeholder="/var/www/uploads/"
-              type="text"
-              value={this.state.path} />
-          </div>
-
-          <p>This is the decription!</p>
-        </section>
-
-        <section className="setting" data-field="url">
-          <header>URL</header>
-
-          <div className="control">
-            <input
-              onChange={this._handleChange}
-              name="url"
-              placeholder="http://eidetica.io/screenshot"
-              type="url"
-              value={this.state.url} />
-          </div>
-
-          <p>This is the decription!</p>
-        </section> */}
+        {addingProvider && (
+          <AddProviderDialog onClose={this._onProviderDialogClose} />
+        )}
       </React.Fragment>
     )
   }

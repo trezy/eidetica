@@ -1,0 +1,92 @@
+dialog {
+  animation-duration: 0.2s;
+  animation-name: fade-in, shrink-in;
+  background-color: $dark-grey;
+  color: $white;
+  border: none;
+  border-radius: 0.25rem;
+  box-shadow: 0 0 1rem 0 $black;
+  display: flex;
+  filter: blur(0) brightness(1);
+  flex-direction: column;
+  flex-shrink: 0;
+  margin: 6rem auto;
+  max-width: 70%;
+  min-width: 25rem;
+  overflow: hidden;
+  padding: 0;
+  pointer-events: initial;
+  position: absolute;
+  transform: translateY(0) scale(1);
+  transition-duration: 0.2s;
+  transition-property: filter, opacity, transform;
+
+  &:not(:last-child) {
+    filter: blur(0.2rem) brightness(0.5);
+    transform: translateY(-5rem) scale(0.8);
+    z-index: -1;
+  }
+
+  > header {
+    align-items: center;
+    background-color: $darkest-grey;
+    border-bottom-color: $grey;
+    border-bottom-style: solid;
+    border-bottom-width: 0.1rem;
+    display: flex;
+    flex-shrink: 0;
+
+    h2 {
+      margin-bottom: 0;
+      padding: 1rem 2rem;
+    }
+
+    [name=close] {
+      border-radius: 0;
+      margin-left: auto;
+    }
+  }
+
+  > .content {
+    flex-shrink: 1;
+    padding: 2rem;
+  }
+
+  > footer {
+    background-color: $darkest-grey;
+    border-top-color: $grey;
+    border-top-style: solid;
+    border-top-width: 0.1rem;
+
+    button {
+      border-radius: 0;
+    }
+  }
+}
+
+#dialog-container {
+  background-color: rgba($black, .6);
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  overflow: auto;
+  pointer-events: all;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+
+  &:empty {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:not(:empty) {
+    opacity: 1;
+
+    ~ #root {
+      filter: blur(1rem);
+    }
+  }
+}

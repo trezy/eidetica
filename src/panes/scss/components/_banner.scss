@@ -1,35 +1,34 @@
 [role=banner] {
   -webkit-app-region: drag;
 
+  align-items: flex-end;
   background-color: $darkest-grey;
+  display: flex;
+  flex-direction: column;
   grid-area: banner;
   min-width: 12rem;
   overflow: auto;
-  padding: 4rem 1rem;
+  padding: 6rem 2rem;
 
-  header {
-    margin-bottom: 1rem;
+  > * {
+    max-width: 25rem;
+    width: 100%;
   }
 
-  li {
-    margin-bottom: 0.2rem;
-  }
+  ul { margin-bottom: 2rem }
+
+  li { margin-bottom: 0.5rem }
 
   button {
     -webkit-app-region: no-drag;
 
-    padding: 0.5rem 1rem;
+    padding: 0.8rem 1.5rem;
     text-align: left;
     width: 100%;
 
-    &:hover {
-      background-color: $dark-grey;
-    }
+    &:hover { background-color: $dark-grey }
 
-    &[data-selected=true] {
-      background-color: $blue;
-      font-weight: bold;
-    }
+    &[data-selected=true] { background-color: $blue }
 
     &[disabled] {
       background-color: $dark-grey;
@@ -42,7 +41,7 @@
 
       &:after {
         background-color: $red;
-        border-radius: 0.2rem;
+        border-radius: 0.5rem;
         color: $white;
         content: 'Coming Soon!';
         font-size: 0.5em;
