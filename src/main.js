@@ -6,7 +6,7 @@ import {
 } from 'electron'
 /* eslint-enable */
 import { enableLiveReload } from 'electron-compile'
-import Config from 'electron-config'
+import Config from 'electron-store'
 import fs from 'fs'
 import log from 'electron-log'
 

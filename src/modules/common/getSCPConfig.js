@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs'
 import { homedir } from 'os'
 import { resolve } from 'path'
-import ElectronConfig from 'electron-config'
+import Config from 'electron-store'
 import SSHConfig from 'ssh-config'
 import untildify from 'untildify'
 
@@ -9,7 +9,7 @@ import untildify from 'untildify'
 
 
 
-const config = new ElectronConfig
+const config = new Config
 
 
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import Config from 'electron-config'
+import Config from 'electron-store'
 
 
 

@@ -6,7 +6,7 @@ import {
 } from 'electron'
 /* eslint-enable */
 import Entities from 'html-entities'
-import ElectronConfig from 'electron-config'
+import Config from 'electron-store'
 import log from 'electron-log'
 import path from 'path'
 
@@ -29,7 +29,7 @@ import {
 
 
 // Component constants
-const config = new ElectronConfig
+const config = new Config
 const entities = new Entities.XmlEntities()
 
 
@@ -39,28 +39,6 @@ const entities = new Entities.XmlEntities()
 const setupUploadListener = () => {
   globalShortcut.register(config.get('shortcut'), async () => {
     const clipboardFileContents = clipboard.readBuffer('NSFilenamesPboardType').toString('utf8')
-
-    const pasteboardTypes = [
-      'NSFileContentsPboardType',
-      'NSFilenamesPasteboardType',
-      'NSFilenamesPboardType',
-      'NSPasteboardTypeColor',
-      'NSPasteboardTypeFileURL',
-      'NSPasteboardTypeFont',
-      'NSPasteboardTypeHTML',
-      'NSPasteboardTypeMultipleTextSelection',
-      'NSPasteboardTypePDF',
-      'NSPasteboardTypePNG',
-      'NSPasteboardTypeRTF',
-      'NSPasteboardTypeRTFD',
-      'NSPasteboardTypeRuler',
-      'NSPasteboardTypeSound',
-      'NSPasteboardTypeString',
-      'NSPasteboardTypeTabularText',
-      'NSPasteboardTypeTextFinderOptions',
-      'NSPasteboardTypeTIFF',
-      'NSPasteboardTypeURL',
-    ]
 
     if (clipboardFileContents) {
       const matches = clipboardFileContents.match(/<string>.*<\/string>/gi)

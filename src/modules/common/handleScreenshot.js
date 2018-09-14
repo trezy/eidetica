@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { app } from 'electron'
-import Config from 'electron-config'
+import Config from 'electron-store'
 import fs from 'fs'
 import log from 'electron-log'
 import path from 'path'

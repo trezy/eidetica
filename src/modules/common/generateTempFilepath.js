@@ -1,7 +1,7 @@
 // Module imports
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { app } from 'electron'
-import ElectronConfig from 'electron-config'
+import Config from 'electron-store'
 import path from 'path'
 import shorthash from 'shorthash'
 
@@ -9,7 +9,7 @@ import shorthash from 'shorthash'
 
 
 
-const config = new ElectronConfig
+const config = new Config
 
 
 

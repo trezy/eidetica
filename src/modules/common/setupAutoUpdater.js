@@ -6,14 +6,14 @@ import {
 } from 'electron'
 /* eslint-enable */
 import { autoUpdater } from 'electron-updater'
-import ElectronConfig from 'electron-config'
+import Config from 'electron-store'
 import log from 'electron-log'
 
 
 
 
 
-const config = new ElectronConfig
+const config = new Config
 
 
 
