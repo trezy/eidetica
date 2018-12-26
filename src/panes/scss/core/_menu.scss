@@ -3,6 +3,10 @@ menu[type=toolbar] {
 
   ul {
     margin-bottom: 0;
+
+    li:not(:last-child) {
+      margin-right: 1rem;
+    }
   }
 
   > .primary,

@@ -9,8 +9,19 @@
   font-size: inherit;
   margin: 0;
   padding: 1rem;
+  transition-duration: 0.2s;
+  transition-property: all;
 
   &:placeholder {
     color: $grey;
+  }
+
+  &[readonly] {
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  &.compact {
+    padding: 0.2rem 1rem;
   }
 }

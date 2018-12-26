@@ -16,6 +16,7 @@ import { addCustomProvider } from '../../modules/common'
 import ChooseProviderType from './Wizards/ChooseProviderType'
 import Dialog from './Dialog'
 import ManualSSHSettings from './Wizards/CustomProvider/ManualSSHSettings'
+import SetProviderName from './Wizards/SetProviderName'
 import SSHSourcePicker from './Wizards/CustomProvider/SSHSourcePicker'
 
 
@@ -28,6 +29,7 @@ class AddProviderDialog extends React.Component {
   \***************************************************************************/
 
   state = {
+    name: '',
     settings: {},
     type: null,
   }
@@ -43,6 +45,7 @@ class AddProviderDialog extends React.Component {
   _onSubmit = event => {
     const { onClose } = this.props
     const {
+      name,
       settings,
       type,
     } = this.state
@@ -52,7 +55,7 @@ class AddProviderDialog extends React.Component {
     switch (type) {
       case 'custom':
       default:
-        addCustomProvider(settings)
+        addCustomProvider(name, settings)
         break
     }
 
@@ -83,6 +86,10 @@ class AddProviderDialog extends React.Component {
     }
 
     if ((type === 'custom') && !settings.sshSource) {
+      return false
+    }
+
+    if (!this._providerIsReady()) {
       return false
     }
 
@@ -124,6 +131,7 @@ class AddProviderDialog extends React.Component {
   render () {
     const { onClose } = this.props
     const {
+      name,
       settings,
       type,
     } = this.state
@@ -144,13 +152,18 @@ class AddProviderDialog extends React.Component {
             className="grid-system"
             onSubmit={this._onSubmit}
             ref={_formEl => this._formEl = _formEl}>
-            <Step id="Choose Provider Type">
+            <Step
+              id="Choose Provider Type"
+              nextStep={() => ((type === 'custom') ? 'Choose SSH Source' : null)}>
               <ChooseProviderType
-                onChange={value => this.setState({ type: value })} />
+                onChange={value => this.setState({ type: value })}
+                value={type} />
             </Step>
 
             {!!type && (
-              <Step id="Choose SSH Source">
+              <Step
+                id="Choose SSH Source"
+                nextStep="Manual SSH Settings">
                 <SSHSourcePicker
                   onChange={value => this._updateSettings({ sshSource: value })}
                   value={settings.sshSource} />
@@ -158,12 +171,20 @@ class AddProviderDialog extends React.Component {
             )}
 
             {(settings.sshSource === 'manual') && (
-              <Step id="Manual SSH Settings">
+              <Step
+                id="Manual SSH Settings"
+                nextStep="Provider Name">
                 <ManualSSHSettings
                   onChange={(key, value) => this._updateSettings({ [key]: value })}
                   value={settings} />
               </Step>
             )}
+
+            <Step id="Provider Name">
+              <SetProviderName
+                onChange={value => this.setState({ name: value })}
+                value={name} />
+            </Step>
           </form>
         </Dialog>
       </Wizard>

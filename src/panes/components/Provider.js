@@ -15,6 +15,10 @@ import Menu from './Menu'
 
 
 class Provider extends React.Component {
+  /***************************************************************************\
+    Local Properties
+  \***************************************************************************/
+
   static defaultProps = {
     onDelete: () => {},
   }
@@ -23,6 +27,26 @@ class Provider extends React.Component {
     name: PropTypes.string.isRequired,
     onDelete: PropTypes.func,
     type: PropTypes.string.isRequired,
+  }
+
+  state = {
+    editMode: false,
+  }
+
+
+
+
+
+  /***************************************************************************\
+    Private Methods
+  \***************************************************************************/
+
+  _onCancel = () => {
+    if (this.onCancel) {
+      this.onCancel()
+    }
+
+    this.setState({ editMode: false })
   }
 
   _onDelete = () => {
@@ -36,6 +60,22 @@ class Provider extends React.Component {
     onDelete()
   }
 
+  _onEdit = () => {
+    if (this.onEdit) {
+      this.onEdit()
+    }
+
+    this.setState({ editMode: true })
+  }
+
+  _onSave = () => {
+    if (this.onSave) {
+      this.onSave()
+    }
+
+    this.setState({ editMode: false })
+  }
+
   static _renderType (type) {
     switch (type) {
       case 'custom':
@@ -44,16 +84,26 @@ class Provider extends React.Component {
     }
   }
 
+
+
+
+
+  /***************************************************************************\
+    Public Methods
+  \***************************************************************************/
+
   render () {
     const {
       name,
       type,
     } = this.props
+    const { editMode } = this.state
 
     return (
       <div className="card">
         <header>
           {name}
+
           <span className="sub-header">
             {Provider._renderType(type)}
           </span>
@@ -63,15 +113,37 @@ class Provider extends React.Component {
 
         <footer>
           <Menu>
-            <button
-              className="primary"
-              data-menu-primary>
-              Edit
-            </button>
+            {!editMode && (
+              <button
+                className="primary"
+                data-menu-primary
+                onClick={this._onEdit}>
+                Edit
+              </button>
+            )}
+
+            {editMode && (
+              <button
+                className="secondary outline"
+                data-menu-primary
+                onClick={this._onCancel}>
+                Cancel
+              </button>
+            )}
+
+            {editMode && (
+              <button
+                className="primary"
+                data-menu-primary
+                onClick={this._onSave}>
+                Save
+              </button>
+            )}
 
             <button
               className="danger outline"
               data-menu-secondary
+              disabled={editMode}
               onClick={this._onDelete}>
               Delete
             </button>

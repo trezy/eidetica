@@ -1,6 +1,5 @@
 // Module imports
 import Config from 'electron-store'
-import uuid from 'uuid/v4'
 
 
 
@@ -13,8 +12,11 @@ const config = new Config
 
 
 
-const addCustomProvider = (name, settings) => {
+const updateCustomProvider = (id, settings) => {
   const providers = config.get('providers')
+  const providerIndex = providers.findIndex(provider => provider.id === id)
+  const provider = providers[providerIndex]
+
   const filteredSettings = {}
 
   for (const [setting, value] of Object.entries(settings)) {
@@ -23,19 +25,16 @@ const addCustomProvider = (name, settings) => {
     }
   }
 
-  config.set('providers', [
-    ...providers,
-    {
-      id: uuid(),
-      name,
-      settings: filteredSettings,
-      type: 'custom',
-    },
-  ])
+  provider.settings = {
+    ...provider.settings,
+    ...filteredSettings,
+  }
+
+  config.set('providers', providers)
 }
 
 
 
 
 
-export { addCustomProvider }
+export { updateCustomProvider }

@@ -59,7 +59,8 @@ class UploadPane extends Pane {
       {(provider.type === 'custom') && (
         <CustomProvider
           {...provider}
-          onDelete={this._updateProviders} />
+          onDelete={this._updateProviders}
+          onEdit={this._updateProviders} />
       )}
     </li>
   )

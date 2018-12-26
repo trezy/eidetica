@@ -1,5 +1,4 @@
 // Module imports
-// import PropTypes from 'prop-types'
 import React from 'react'
 
 
@@ -7,7 +6,40 @@ import React from 'react'
 
 
 // Component imports
+import { updateCustomProvider } from '../../modules/common'
 import Provider from './Provider'
+
+
+
+
+
+// Component constants
+const fieldsToRender = [
+  {
+    key: 'sshSource',
+    title: 'SSH Source',
+  },
+  {
+    key: 'username',
+    title: 'Username',
+  },
+  {
+    key: 'host',
+    title: 'Host',
+  },
+  {
+    key: 'port',
+    title: 'Port',
+  },
+  {
+    key: 'path',
+    title: 'Path',
+  },
+  {
+    key: 'url',
+    title: 'URL',
+  },
+]
 
 
 
@@ -18,9 +50,29 @@ class CustomProvider extends Provider {
     Local Properties
   \***************************************************************************/
 
-  static defaultProps = {}
+  state = {
+    ...this.state,
+    editedSettings: {},
+  }
 
-  static propTypes = {}
+
+
+
+
+  /***************************************************************************\
+    Private Methods
+  \***************************************************************************/
+
+  _onChange = ({ target: { name, value } }) => {
+    const { editedSettings } = this.state
+
+    this.setState({
+      editedSettings: {
+        ...editedSettings,
+        [name]: value,
+      },
+    })
+  }
 
 
 
@@ -30,12 +82,31 @@ class CustomProvider extends Provider {
     Public Methods
   \***************************************************************************/
 
+  onCancel = () => {
+    this.setState({ editedSettings: {} })
+  }
+
+  onEdit = () => {
+    const { onEdit } = this.props
+
+    if (onEdit) {
+      onEdit()
+    }
+  }
+
+  onSave = () => {
+    const { id } = this.props
+    const { editedSettings } = this.state
+
+    updateCustomProvider(id, editedSettings)
+  }
+
   renderBody () {
+    const { settings } = this.props
     const {
-      id,
-      name,
-      settings,
-    } = this.props
+      editMode,
+      editedSettings,
+    } = this.state
 
     const settingsToDisplay = {
       ...settings,
@@ -46,25 +117,20 @@ class CustomProvider extends Provider {
       <React.Fragment>
         <table>
           <tbody>
-            <tr>
-              <th>ID:</th>
+            {fieldsToRender.map(({ key, title }) => (
+              <tr key={key}>
+                <th>{title}:</th>
 
-              <td>{id}</td>
-            </tr>
-
-            <tr>
-              <th>Name:</th>
-
-              <td>{name}</td>
-            </tr>
-
-            <tr>
-              <th>Setting:</th>
-
-              <td>
-                <pre>{JSON.stringify(settingsToDisplay, null, 2)}</pre>
-              </td>
-            </tr>
+                <td>
+                  <input
+                    className="compact"
+                    name={key}
+                    onChange={this._onChange}
+                    readOnly={!editMode}
+                    value={editedSettings[key] || settingsToDisplay[key]} />
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </React.Fragment>
