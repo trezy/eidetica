@@ -154,21 +154,12 @@ new class App {
     // Setup default configs
     new Config({
       defaults: {
-        // App settings
         autoUpdate: true,
         deleteAfterUpload: true,
         filenameHandling: 'hash',
         launchAtLogin: true,
         providers: [],
         shortcut: 'Super+Control+U',
-
-        // Server settings
-        host: '',
-        password: '',
-        path: '',
-        port: '',
-        url: '',
-        username: '',
       },
     })
 
