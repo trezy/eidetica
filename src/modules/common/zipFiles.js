@@ -42,7 +42,7 @@ const zipFiles = files => new Promise((resolve, reject) => {
   files.forEach(file => {
     const fileBasename = path.basename(file)
 
-    if (isDirectory(isDirectory)) {
+    if (isDirectory(file)) {
       archive.directory(file, fileBasename)
     } else {
       archive.file(file, { name: fileBasename })

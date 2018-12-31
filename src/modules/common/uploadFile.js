@@ -33,8 +33,6 @@ const uploadFile = async filepath => {
   const filename = path.basename(filepath)
   const providers = config.get('providers')
 
-  log.info('providers', providers)
-
   log.info('Uploading file', filename)
 
   const scpClient = new Client(providers[0].settings)
