@@ -30,8 +30,10 @@ class AddProviderDialog extends React.Component {
 
   state = {
     name: '',
-    settings: {},
-    type: null,
+    settings: {
+      sshSource: 'manual',
+    },
+    type: 'custom',
   }
 
 
@@ -143,7 +145,8 @@ class AddProviderDialog extends React.Component {
     ]
 
     return (
-      <Wizard defaultStep="Choose Provider Type">
+      <Wizard defaultStep="Manual SSH Settings">
+      {/* <Wizard defaultStep="Choose Provider Type"> */}
         <Dialog
           controls={controls}
           onClose={onClose}
@@ -152,15 +155,15 @@ class AddProviderDialog extends React.Component {
             className="grid-system"
             onSubmit={this._onSubmit}
             ref={_formEl => this._formEl = _formEl}>
-            <Step
+            {/* <Step
               id="Choose Provider Type"
               nextStep={() => ((type === 'custom') ? 'Choose SSH Source' : null)}>
               <ChooseProviderType
                 onChange={value => this.setState({ type: value })}
                 value={type} />
-            </Step>
+            </Step> */}
 
-            {!!type && (
+            {/* {!!type && (
               <Step
                 id="Choose SSH Source"
                 nextStep="Manual SSH Settings">
@@ -168,17 +171,17 @@ class AddProviderDialog extends React.Component {
                   onChange={value => this._updateSettings({ sshSource: value })}
                   value={settings.sshSource} />
               </Step>
-            )}
+            )} */}
 
-            {(settings.sshSource === 'manual') && (
-              <Step
-                id="Manual SSH Settings"
-                nextStep="Provider Name">
-                <ManualSSHSettings
-                  onChange={(key, value) => this._updateSettings({ [key]: value })}
-                  value={settings} />
-              </Step>
-            )}
+            {/* {(settings.sshSource === 'manual') && ( */}
+            <Step
+              id="Manual SSH Settings"
+              nextStep="Provider Name">
+              <ManualSSHSettings
+                onChange={(key, value) => this._updateSettings({ [key]: value })}
+                value={settings} />
+            </Step>
+            {/* )} */}
 
             <Step id="Provider Name">
               <SetProviderName
